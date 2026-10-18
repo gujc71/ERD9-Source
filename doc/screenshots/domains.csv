@@ -1,0 +1,9 @@
+Name,Data Type,Default,Not Null,Comment
+번호,INT,,Y,일련번호
+ID,BIGINT,,Y,식별자
+금액,"DECIMAL(12,0)",0,Y,원 단위 금액
+수량,INT,0,Y,수량
+명칭,VARCHAR(50),,Y,이름
+코드,CHAR(2),,Y,공통코드
+상태,VARCHAR(10),,Y,상태값
+일시,DATETIME,,Y,날짜와 시간

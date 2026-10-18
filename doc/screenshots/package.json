@@ -1,0 +1,13 @@
+{
+  "name": "erd9-manual-screenshots",
+  "private": true,
+  "type": "module",
+  "description": "사용자 매뉴얼(doc/user-manual_ko.adoc, doc/user-manual_en.adoc)의 화면 캡처",
+  "scripts": {
+    "web": "node run-web.mjs",
+    "desktop": "node 08_desktop.mjs"
+  },
+  "dependencies": {
+    "playwright-core": "1.56.1"
+  }
+}

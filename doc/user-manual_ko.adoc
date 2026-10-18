@@ -1,0 +1,982 @@
+= ERD9 사용자 매뉴얼
+:author: ERD9
+:revnumber: 1.0
+:revdate: 2026-10-18
+:lang: ko
+:doctype: book
+:toc: left
+:toclevels: 3
+:toc-title: 목차
+:sectnums:
+:sectnumlevels: 3
+:sectanchors:
+:icons: font
+:imagesdir: images
+:figure-caption: 그림
+:table-caption: 표
+:example-caption: 예
+:note-caption: 참고
+:tip-caption: 팁
+:important-caption: 중요
+:warning-caption: 주의
+:caution-caption: 조심
+:chapter-signifier:
+:experimental:
+
+[preface]
+== 이 매뉴얼에 대하여
+
+ERD9는 테이블(엔터티)과 그 사이의 관계를 그림으로 그리면서 데이터베이스 구조를 설계하는 모델링 도구입니다.
+웹 브라우저에서 바로 사용할 수 있고, 같은 프로그램을 Windows 실행 파일(데스크톱 앱)로도 사용할 수 있습니다.
+
+이 매뉴얼은 ERD9의 모든 기능을 화면과 함께 설명합니다.
+화면의 예제는 온라인 쇼핑몰 모델(고객, 주문, 상품, 결제, 배송, 리뷰 등 8개 테이블)을 사용합니다.
+
+[cols="1,3",options="header"]
+.웹 버전과 데스크톱 앱
+|===
+| 구분 | 설명
+
+| 웹 버전
+| 웹 브라우저(Chrome, Firefox, Edge)에서 실행합니다. 로그인과 서버 저장이 없으며 문서는 브라우저(IndexedDB)에 저장됩니다.
+
+| 데스크톱 앱
+| 문서를 JSON 형식의 `.erd9` 파일로 저장하고 엽니다(<<desktop-files>> 참조). 웹 버전의 모든 기능에 더해 *Database* 메뉴(Forward Engineering, Reverse Engineering, Compare and Merge)로 데이터베이스 서버에 직접 연결할 수 있습니다. 웹 브라우저는 데이터베이스 서버에 직접 연결할 수 없으므로 이 메뉴는 데스크톱 앱에만 있습니다.
+|===
+
+IMPORTANT: 웹 버전의 문서는 사용 중인 브라우저에만 저장됩니다. 공용 PC에서는 사용 후 문서를 삭제하고, 중요한 문서는 menu:Files[Export to Json]으로 PC에 따로 보관하십시오. 데스크톱 앱은 문서를 사용자가 고른 위치에 `.erd9` 파일로 저장하므로, 파일을 복사해서 백업하거나 다른 PC로 옮길 수 있습니다.
+
+== 시작하기
+
+=== 처음 실행
+
+ERD9를 처음 열면 샘플 목록이 나타납니다.
+샘플을 선택하고 btn:[Open]을 누르면(또는 행을 더블 클릭하면) 샘플 문서가 열립니다.
+샘플 없이 시작하려면 btn:[Close]를 누릅니다. *Don't Show* 를 선택하면 다음부터 이 창이 나타나지 않습니다.
+
+.샘플 목록
+image::start-samples.png[ERD Samples 다이얼로그]
+
+[cols="1,1,1",options="header"]
+.제공 샘플
+|===
+| 샘플 | 엔터티 / 관계 | DBMS
+| Sakila | 16 / 20 | MySQL (MariaDB)
+| Employee | 6 / 6 | MySQL (MariaDB)
+| BikeStores | 9 / 10 | MS-SQL
+| Global fictitious company | 12 / 11 | ORACLE
+|===
+
+.Employee 샘플을 연 화면
+image::sample-employee.png[Employee 샘플]
+
+NOTE: 샘플은 인터넷(gujc71.github.io)에서 내려받으므로 인터넷에 연결되어 있어야 합니다. 샘플 목록은 menu:Files[Open Samples]로 언제든 다시 열 수 있습니다.
+
+=== 화면 구성
+
+.ERD9 기본 화면
+image::main-screen.png[ERD9 기본 화면]
+
+[cols="1,4",options="header"]
+.화면 구성 요소
+|===
+| 영역 | 설명
+
+| 문서 이름
+| 로고 오른쪽 위에 현재 문서 이름이 표시됩니다. 저장하지 않은 새 문서는 `no name` 입니다.
+
+| Files 메뉴
+| 새 문서, 열기, 저장, 이력, 이미지 내보내기, JSON 내보내기/가져오기 (<<files>> 참조)
+
+| 도구 모음
+| 선택, 글상자, 엔터티, 식별 관계, 비식별 관계, 다대다 관계, 주제 영역 도구 (<<tools>> 참조)
+
+| Logical / Physical
+| 논리명(한글 이름)과 물리명(테이블, 컬럼 이름) 표시 전환 (<<view-mode>> 참조)
+
+| 표시 항목
+| All Attributes / Entity / Keys (<<view-data>> 참조)
+
+| DBMS
+| 문서의 대상 DBMS: MariaDB, ORACLE, MS-SQL, PostgreSQL (<<dbms>> 참조)
+
+| Add-ons 메뉴
+| DDL 가져오기와 생성, 비교, 테이블 정의서, 표준 사전 등 부가 기능 (<<addons>> 참조)
+
+| Database 메뉴
+| 데스크톱 앱에서만 표시. DB 서버 연결 기능 (<<database>> 참조)
+
+| 찾기, 테마
+| 오른쪽 위의 돋보기(찾기)와 테마(밝게, 어둡게, 시스템) 버튼
+
+| 페이지 탭
+| 화면 아래의 `Main` 과 사용자가 만든 페이지 (<<pages>> 참조)
+
+| AI 채팅 버튼
+| 오른쪽 아래의 둥근 버튼. AI와 대화 (<<ai>> 참조)
+|===
+
+[[tools]]
+=== 도구 모음
+
+.도구 모음
+image::toolbar-tools.png[도구 모음]
+
+[cols="1,4",options="header"]
+|===
+| 도구 | 사용법
+
+| 선택 (화살표)
+| 도형을 선택하고 이동합니다. 빈 곳을 끌면 사각형 안의 도형을 한꺼번에 선택합니다.
+
+| 글상자 (T)
+| 캔버스를 클릭한 위치에 글상자를 만듭니다.
+
+| 엔터티
+| 캔버스를 클릭한 위치에 엔터티를 만듭니다.
+
+| 식별 관계 (실선)
+| 부모 엔터티를 클릭한 뒤 자식 엔터티를 클릭합니다. 부모의 기본키가 자식의 기본키(PK)로 추가됩니다.
+
+| 비식별 관계 (점선)
+| 부모 엔터티를 클릭한 뒤 자식 엔터티를 클릭합니다. 부모의 기본키가 자식의 일반 컬럼(외래키)으로 추가됩니다.
+
+| 다대다 관계 (M:N)
+| 두 엔터티를 차례로 클릭하면 두 엔터티의 기본키로 된 연관(교차) 테이블을 만들고 두 개의 식별 관계로 연결합니다.
+
+| 주제 영역
+| 캔버스를 클릭한 위치에 관련 엔터티를 묶는 영역을 만듭니다.
+|===
+
+== 엔터티
+
+=== 엔터티 만들기
+
+도구 모음에서 *엔터티* 도구를 선택하고 캔버스의 빈 곳을 클릭하면 빈 엔터티가 만들어집니다.
+
+.새로 만든 엔터티
+image::entity-new.png[새 엔터티]
+
+엔터티를 더블 클릭하면 *Entity* 다이얼로그가 열립니다.
+테이블 이름(물리명)과 엔터티 이름(논리명)을 입력하고, 컬럼 목록에 컬럼을 입력한 뒤 btn:[Save]를 누릅니다.
+
+.새 엔터티에 컬럼 입력
+image::entity-new-dialog.png[새 엔터티 입력]
+
+=== 엔터티 선택과 도형 메뉴
+
+엔터티를 클릭하면 선택되고 왼쪽 위에 도형 메뉴가 나타납니다.
+
+* ⓧ : 선택한 도형 삭제 (kbd:[Del] 키와 같음)
+* ⓔ : 수정 다이얼로그 열기 (더블 클릭과 같음)
+
+.선택된 엔터티와 도형 메뉴
+image::entity-selected.png[선택된 엔터티]
+
+여러 엔터티를 선택하려면 kbd:[Shift]를 누른 채 클릭하거나, 빈 곳에서 마우스를 끌어 사각형으로 선택합니다.
+kbd:[Ctrl+A]는 모든 도형을 선택합니다.
+선택한 도형을 끌면 함께 이동합니다.
+
+TIP: 하나만 선택된 엔터티의 컬럼 줄을 위아래로 끌면 컬럼 순서를 바꿀 수 있습니다.
+
+=== Entity 다이얼로그
+
+.Entity 다이얼로그
+image::entity-dialog.png[Entity 다이얼로그]
+
+[cols="1,4",options="header"]
+.입력 항목
+|===
+| 항목 | 설명
+
+| Table Name (Physical) | 테이블 이름(물리명)
+| Entity Name (Logical) | 엔터티 이름(논리명). 테이블 주석으로 사용됩니다.
+| Color | 엔터티 머리글의 배경색. 견본을 클릭하거나 왼쪽 색상 상자에서 직접 고릅니다.
+| Column Name | 컬럼 이름(물리명)
+| Attribute Name | 속성 이름(논리명). 컬럼 주석으로 사용됩니다.
+| Data Type | 데이터 타입. 입력하면 DBMS에 맞는 타입 목록이 나타납니다.
+| Default | 기본값
+| PK | 기본키
+| UQ | 고유(Unique)
+| NN | NOT NULL
+| AI | 자동 증가(Auto Increment / Identity)
+| Domain | 도메인. 셀을 클릭해 선택합니다 (<<domains>> 참조).
+|===
+
+아래쪽 버튼은 다음과 같습니다.
+
+* btn:[↑] / btn:[↓] : 선택한 컬럼을 위/아래로 이동
+* btn:[+] / btn:[-] : 컬럼 추가/삭제
+* *+ Template columns* : 공통 컬럼 템플릿 추가 (<<templates>> 참조)
+* btn:[Standardize] : 표준 사전으로 컬럼명 변경 (표준 단어나 용어가 있을 때만 표시, <<standards>> 참조)
+* btn:[Index / Check] : 인덱스와 CHECK 제약조건 편집 화면으로 전환
+
+NOTE: 다른 엔터티에서 받은 외래키 컬럼(흐리게 표시)은 이 다이얼로그에서 수정할 수 없습니다. 부모 엔터티의 기본키를 수정하면 함께 바뀝니다.
+
+==== 데이터 타입 입력
+
+Data Type 셀을 클릭하고 글자를 입력하면 현재 DBMS의 데이터 타입 중 일치하는 항목이 나타납니다.
+kbd:[↑] / kbd:[↓] 로 고르고 kbd:[Enter]를 누릅니다.
+자릿수가 필요한 타입(`VARCHAR (n)` 등)은 괄호 안에 커서가 놓이므로 자릿수를 이어서 입력합니다.
+
+.데이터 타입 자동 완성
+image::entity-datatype.png[데이터 타입 목록]
+
+==== 인덱스와 CHECK 제약조건
+
+btn:[Index / Check]를 누르면 인덱스 편집 화면으로 바뀝니다. 다시 누르면 컬럼 목록으로 돌아갑니다.
+
+.인덱스와 CHECK 제약조건
+image::entity-index.png[Index / Check]
+
+인덱스 만들기::
+. 왼쪽 컬럼 목록에서 인덱스에 넣을 컬럼을 클릭합니다. 선택한 컬럼은 가운데에 표시되며, 끌어서 순서를 바꿀 수 있습니다.
+. *Index Name* 을 입력합니다(5자 이상). 고유 인덱스는 *Unique* 를 선택합니다.
+. btn:[add]를 누릅니다. 같은 이름이 있으면 수정됩니다.
+. 목록의 인덱스를 클릭하면 다시 편집하고, 앞의 `x` 를 클릭하면 삭제합니다.
+
+CHECK 제약조건 만들기::
+. *Name* 과 *Expression* (예: `PRICE >= 0`)을 입력합니다.
+. btn:[add]를 누릅니다. 목록의 항목을 클릭하면 편집하고, `x` 를 클릭하면 삭제합니다.
+
+==== 엔터티 색상
+
+중요한 엔터티나 업무 영역별로 머리글 색상을 지정할 수 있습니다.
+
+.색상을 지정한 엔터티
+image::entity-color.png[엔터티 색상]
+
+=== 복사, 붙여넣기, 삭제, 실행 취소
+
+* kbd:[Ctrl+C] / kbd:[Ctrl+V] : 선택한 엔터티, 글상자, 주제 영역을 복사하고 붙여넣습니다. 붙여넣은 엔터티에서 외래키 연결은 제거됩니다.
+* kbd:[Del] : 선택한 도형을 삭제합니다.
+* kbd:[Ctrl+Z] / kbd:[Ctrl+Y] : 실행 취소 / 다시 실행
+
+== 관계
+
+=== 관계 만들기
+
+관계 도구(식별, 비식별)를 선택하고 부모 엔터티를 클릭한 뒤 자식 엔터티를 클릭합니다.
+부모 엔터티의 기본키가 자식 엔터티에 외래키(FK)로 추가됩니다.
+
+* *식별 관계(실선)* : 외래키가 자식의 기본키가 됩니다(`PF` 로 표시).
+* *비식별 관계(점선)* : 외래키가 자식의 일반 컬럼이 됩니다(`FK` 로 표시).
+
+.CUSTOMER에서 COUPON으로 비식별 관계를 만든 결과 (COUPON에 CUST_NO 추가)
+image::relation-new.png[비식별 관계 만들기]
+
+=== 관계 수정
+
+관계선을 클릭하면 선택되고, 더블 클릭하면 *Relationship* 다이얼로그가 열립니다.
+
+.선택된 관계선
+image::relation-selected.png[선택된 관계]
+
+.Relationship 다이얼로그
+image::relation-dialog.png[Relationship 다이얼로그]
+
+[cols="1,4",options="header"]
+|===
+| 항목 | 설명
+
+| Cardinality
+| One To One(1:1) 또는 One To Many(1:N)
+
+| Optionality
+| 부모와 자식이 필수(Mandatory)인지 선택(Optional)인지 지정합니다. 관계선 끝의 기호가 바뀝니다.
+
+| FK Constraint Name
+| 외래키 제약조건 이름. 비워 두면 내부 ID를 사용합니다.
+
+| ON DELETE / ON UPDATE
+| 참조 동작(NO ACTION, CASCADE, SET NULL 등). 선택한 DBMS가 지원하지 않는 옵션은 생성된 DDL에 주석으로 남습니다.
+
+| Relationship Name
+| 관계선에 표시할 이름(예: places, has)
+
+| Automatic route
+| 다른 테이블을 피해 자동으로 선을 그립니다. 선을 직접 옮긴 뒤 이 항목을 다시 켜면 자동 경로로 돌아갑니다.
+|===
+
+TIP: 관계선의 가운데를 끌면 꺾이는 위치가 바뀌고, 끝 부분을 끌면 연결 위치가 엔터티의 변을 따라 이동합니다.
+
+=== 자기참조 관계
+
+관계 도구로 같은 엔터티를 두 번 클릭하면 자기참조 관계가 만들어집니다(예: 상위 분류, 직원의 관리자).
+기본키는 `PARENT_` 로 시작하는 NULL 허용 컬럼으로 추가됩니다.
+
+.자기참조 관계 (CATEGORY.PARENT_CATEGORY_ID)
+image::relation-self.png[자기참조 관계]
+
+=== 다대다 관계
+
+*M:N* 도구를 선택하고 두 엔터티를 차례로 클릭하면, 두 엔터티의 기본키로 구성된 연관(교차) 테이블이 만들어지고 두 개의 식별 관계로 연결됩니다.
+
+.CUSTOMER와 PRODUCT의 다대다 관계로 생성된 CUSTOMER_PRODUCT
+image::relation-mn.png[다대다 관계]
+
+NOTE: 다대다 관계를 만들려면 두 엔터티 모두 기본키가 있어야 합니다.
+
+== 글상자와 주제 영역
+
+=== 글상자
+
+*글상자* 도구로 캔버스를 클릭하면 글상자가 만들어집니다.
+글상자를 더블 클릭하면 내용을 입력하는 다이얼로그가 열립니다. 테이블 설명, 업무 규칙, 참고 코드 등을 적어 둘 때 사용합니다.
+
+.Text 다이얼로그
+image::text-dialog.png[Text 다이얼로그]
+
+.캔버스에 표시된 글상자
+image::text-box.png[글상자]
+
+=== 주제 영역
+
+*주제 영역* 도구로 캔버스를 클릭하면 영역이 만들어집니다. 관련 엔터티를 시각적으로 묶을 때 사용합니다.
+
+* 영역의 이름이나 테두리를 끌면 영역 안의 엔터티가 함께 이동합니다.
+* 오른쪽 아래 모서리의 작은 사각형을 끌면 크기가 바뀝니다.
+* 이름이나 테두리를 더블 클릭하면 이름과 색상을 바꿀 수 있습니다.
+
+.Subject Area 다이얼로그
+image::area-dialog.png[Subject Area 다이얼로그]
+
+.주제 영역 (주문 영역)
+image::area.png[주제 영역]
+
+== 보기
+
+[[view-mode]]
+=== 논리명과 물리명 (Logical / Physical)
+
+btn:[Logical]과 btn:[Physical] 버튼은 각각 켜고 끌 수 있습니다.
+
+* *Physical* 만 켬: 테이블과 컬럼의 물리명 (기본)
+* *Logical* 만 켬: 엔터티와 속성의 논리명 (한글 이름)
+* 둘 다 켬: 물리명과 논리명을 함께 표시
+
+.Logical과 Physical을 모두 켠 화면
+image::view-both.png[논리명과 물리명]
+
+.Logical만 켠 화면 (Keys 표시와 함께 사용)
+image::view-logical.png[논리명]
+
+[[view-data]]
+=== 표시 항목 (All Attributes / Entity / Keys)
+
+.표시 항목 메뉴
+image::menu-viewdata.png[표시 항목 메뉴,200]
+
+* *All Attributes* : 모든 컬럼 표시
+* *Entity* : 엔터티 이름만 표시 (전체 구조를 볼 때)
+* *Keys* : 기본키와 외래키만 표시
+
+.Entity 표시
+image::view-entity.png[Entity 표시]
+
+.Keys 표시
+image::view-keys.png[Keys 표시]
+
+[[dbms]]
+=== DBMS 선택
+
+도구 모음의 DBMS 메뉴에서 문서의 대상 DBMS를 선택합니다. 지원 DBMS는 MariaDB(MySQL), ORACLE, MS-SQL, PostgreSQL입니다.
+DBMS를 바꾸면 데이터 타입이 대상 DBMS에 맞게 변환되고, DDL 생성과 비교 스크립트도 선택한 DBMS 문법으로 만들어집니다.
+
+.DBMS 메뉴
+image::menu-dbms.png[DBMS 메뉴,200]
+
+.ORACLE로 바꾼 결과 (INT → NUMBER(10), VARCHAR → VARCHAR2, DATETIME → DATE)
+image::dbms-oracle.png[ORACLE로 변환]
+
+NOTE: 다른 DBMS로 바꿨다가 원래 DBMS로 되돌리면, 그 사이 직접 수정하지 않은 컬럼과 도메인은 원래 타입으로 복원됩니다(예: `TINYINT` → `NUMBER(3)` → `TINYINT`). 바꾼 DBMS에서 타입을 직접 수정한 컬럼은 다시 변환됩니다.
+
+=== 확대, 축소, 화면 이동
+
+* 확대 / 축소: kbd:[Ctrl++] / kbd:[Ctrl+-], kbd:[Ctrl] + 마우스 휠, 터치패드 확대 동작
+* 원래 크기: kbd:[Ctrl+0]
+* 위아래 / 좌우 스크롤: 마우스 휠 / kbd:[Shift] + 마우스 휠
+* 화면 이동: kbd:[Space] 를 누른 채 끌기, 또는 마우스 가운데 버튼으로 끌기
+
+.축소한 화면
+image::zoom-out.png[축소]
+
+=== 테마
+
+오른쪽 위의 테마 버튼에서 *Light*, *Dark*, *System*(운영체제 설정을 따름)을 선택합니다.
+
+.테마 메뉴
+image::theme-menu.png[테마 메뉴,220]
+
+.Dark 테마
+image::theme-dark.png[Dark 테마]
+
+[[find]]
+=== 찾기
+
+kbd:[Ctrl+F] 를 누르거나 오른쪽 위의 돋보기를 클릭하면 찾기 상자가 열립니다.
+테이블 이름, 컬럼 이름, 논리명으로 찾으며, 결과를 클릭하면 해당 엔터티로 화면이 이동합니다.
+
+* kbd:[Enter] 또는 kbd:[↓] : 다음 결과
+* kbd:[Shift+Enter] 또는 kbd:[↑] : 이전 결과
+* kbd:[Esc] : 닫기
+
+현재 페이지에 없는 엔터티는 결과에 `Main` 표시가 붙습니다.
+
+.찾기 (CUST)
+image::find.png[찾기]
+
+[[pages]]
+== 페이지
+
+큰 모델은 업무 영역별로 페이지를 나누어 볼 수 있습니다.
+하나의 엔터티를 여러 페이지에 넣을 수 있고 페이지마다 위치를 따로 가집니다. `Main` 페이지는 항상 모든 엔터티를 보여줍니다.
+
+=== 페이지 만들기
+
+. 페이지에 넣을 엔터티를 선택합니다.
++
+.페이지에 넣을 엔터티 선택
+image::page-select.png[엔터티 선택]
+. 화면 아래 탭 옆의 btn:[+]를 누르고 페이지 이름을 입력합니다.
+. 선택한 엔터티만 있는 새 페이지가 열립니다.
++
+.새로 만든 '주문' 페이지
+image::page-tab.png[주문 페이지]
+
+=== 페이지 수정과 삭제
+
+페이지 탭을 더블 클릭하거나 탭의 연필 아이콘을 누르면 *Page* 다이얼로그가 열립니다.
+이름을 바꾸고 페이지에 넣을 엔터티를 선택하거나 해제합니다. *Filter* 로 엔터티를 찾고, btn:[All] / btn:[None] 으로 보이는 항목을 모두 선택하거나 해제할 수 있습니다.
+btn:[Delete Page]는 페이지를 삭제합니다(엔터티는 모델에 남습니다).
+
+.Page 다이얼로그
+image::page-dialog.png[Page 다이얼로그]
+
+NOTE: 페이지에서 엔터티를 선택하고 kbd:[Del] 을 누르면 *Remove from Page*(이 페이지에서만 제거)와 *Delete from Model*(모델과 모든 페이지에서 삭제) 중에서 선택합니다. 관계선은 양쪽 엔터티가 모두 보일 때만 표시되고, 글상자와 주제 영역은 만든 페이지에만 표시됩니다.
+
+[[files]]
+== 파일
+
+문서를 저장하는 곳은 웹 버전과 데스크톱 앱이 다릅니다.
+
+[cols="1,2,2",options="header"]
+.저장 방식
+|===
+| 구분 | 웹 버전 | 데스크톱 앱
+| 저장 위치 | 브라우저 내부 저장소(IndexedDB) | 사용자가 고른 폴더의 파일
+| 파일 형식 | - | JSON 형식의 `.erd9` 파일
+| Save | 처음 저장할 때 문서 이름 입력 | 처음 저장할 때 저장 대화상자에서 파일 선택
+| Open | 브라우저에 저장한 문서 목록에서 선택 | 열기 대화상자에서 `.erd9` 파일 선택
+| Save As | 없음 | 다른 `.erd9` 파일로 저장
+| 다른 PC로 옮기기 | menu:Files[Export to Json] / menu:Files[Import from Json] | `.erd9` 파일 복사
+|===
+
+웹 버전의 저장과 열기는 <<web-save>>, 데스크톱 앱은 <<desktop-files>>를 참조하십시오. History, 이미지 내보내기, JSON 내보내기와 가져오기, 자동 저장과 복구는 두 버전에서 같습니다.
+
+.Files 메뉴
+image::menu-files.png[Files 메뉴,210]
+
+[cols="1,4",options="header"]
+|===
+| 메뉴 | 설명
+
+| New | 새 문서를 만듭니다.
+| Open Samples | 샘플 목록을 엽니다.
+| Open | 브라우저에 저장한 문서를 엽니다. 데스크톱 앱은 `.erd9` 파일을 엽니다.
+| Save | 문서를 브라우저에 저장합니다 (kbd:[Ctrl+S]). 데스크톱 앱은 `.erd9` 파일로 저장합니다.
+| Save As | 데스크톱 앱에서만 표시. 다른 `.erd9` 파일로 저장합니다 (kbd:[Ctrl+Shift+S]).
+| History | 저장할 때마다 남긴 이전 버전을 보고 비교하거나 복원합니다.
+| Export Image & Print | 다이어그램을 PNG, SVG 이미지로 내려받거나 인쇄합니다.
+| Export to Json | 문서를 JSON 파일로 PC에 내려받습니다.
+| Import from Json | PC의 JSON 파일을 엽니다.
+|===
+
+[[web-save]]
+=== 저장 (웹 버전)
+
+NOTE: 데스크톱 앱은 이 절 대신 <<desktop-files>>와 같이 `.erd9` 파일로 저장합니다.
+
+menu:Files[Save] 또는 kbd:[Ctrl+S] 를 누릅니다. 처음 저장할 때는 파일 이름을 입력합니다.
+저장한 문서 이름은 화면 왼쪽 위에 표시됩니다.
+
+.저장한 문서 이름
+image::filename.png[문서 이름]
+
+=== 열기 (웹 버전)
+
+menu:Files[Open]은 브라우저에 저장한 문서 목록을 최근 수정한 순서로 보여줍니다.
+문서를 선택하고 btn:[Open]을 누르거나 더블 클릭합니다. 행 끝의 `X` 는 문서와 그 이력을 삭제합니다.
+
+.File Open
+image::file-open.png[File Open]
+
+[[desktop-files]]
+=== 저장과 열기 (데스크톱 앱)
+
+데스크톱 앱은 문서를 브라우저 저장소 대신 PC의 `.erd9` 파일로 저장하고 엽니다.
+`.erd9` 파일은 menu:Files[Export to Json]으로 내려받는 파일과 같은 JSON 형식이므로, 웹 버전의 menu:Files[Import from Json]으로도 열 수 있습니다.
+데스크톱 앱의 Files 메뉴에는 *Save As* 가 추가됩니다.
+
+.데스크톱 앱의 Files 메뉴
+image::menu-files-desktop.png[데스크톱 앱 Files 메뉴,210]
+
+저장::
+* menu:Files[Save] 또는 kbd:[Ctrl+S] : 처음 저장할 때는 저장 대화상자에서 폴더와 파일 이름을 고릅니다. 확장자를 입력하지 않으면 `.erd9` 가 붙습니다. 그 다음부터는 묻지 않고 같은 파일에 저장합니다.
+* menu:Files[Save As] 또는 kbd:[Ctrl+Shift+S] : 다른 파일로 저장하고, 이후에는 그 파일로 계속 작업합니다.
++
+.저장 대화상자
+image::file-save-desktop.png[저장 대화상자]
++
+저장한 파일 이름(확장자 제외)이 화면 왼쪽 위에 표시되며, 마우스를 올리면 전체 경로가 보입니다.
++
+.저장한 파일 이름
+image::filename-desktop.png[파일 이름]
+
+열기::
+menu:Files[Open]을 누르고 열기 대화상자에서 `.erd9` 파일을 고릅니다. 현재 문서를 저장하지 않았으면 먼저 확인합니다.
++
+.열기 대화상자
+image::file-open-desktop.png[열기 대화상자]
+
+NOTE: 저장할 때마다 이 PC에 버전이 남으므로(파일마다 최대 20개) 데스크톱 앱에서도 menu:Files[History]로 이전 버전을 비교하거나 복원할 수 있습니다. 버전은 파일 경로별로 관리되며 `.erd9` 파일 안에는 들어가지 않습니다. 저장하지 않은 작업의 자동 저장과 복구도 웹 버전과 같습니다.
+
+=== 이력 (History)
+
+문서를 저장할 때마다 버전이 남습니다(문서마다 최대 20개).
+menu:Files[History]에서 버전을 현재 문서와 비교(btn:[Compare])하거나 복원(btn:[Restore])할 수 있습니다.
+
+.File History
+image::file-history.png[File History]
+
+btn:[Compare]를 누르면 그 버전과 현재 문서의 차이와, 그 버전으로 만든 데이터베이스를 현재 문서로 바꾸는 ALTER 스크립트가 표시됩니다.
+
+.이전 버전과 비교: CUSTOMER에 컬럼 추가, PAYMENT의 컬럼 이름 변경
+image::file-history-compare.png[이력 비교]
+
+NOTE: 이력을 사용하려면 먼저 문서를 저장해야 합니다. 복원한 문서는 같은 파일로 계속 작업하며, 다시 저장하기 전까지 수정된 상태입니다.
+
+=== 이미지 내보내기와 인쇄
+
+menu:Files[Export Image & Print]를 엽니다.
+
+.Export Image & Prints
+image::file-print.png[이미지 내보내기와 인쇄]
+
+이미지 내보내기::
+* *All* (전체) 또는 *Selected entities* (선택한 엔터티만, 엔터티를 선택했을 때 사용 가능)
+* *Scale* : PNG 배율 1x ~ 4x
+* *Transparent background* : 투명 배경
+* btn:[Download PNG] / btn:[Download SVG]
++
+이미지는 엔터티가 있는 영역만큼 잘라서 만들어집니다.
+
+인쇄::
+. *Width* 와 *Height* 에 용지 크기를 픽셀로 입력합니다. 기본값은 A4(21cm × 29.7cm = 794 × 1124 픽셀)입니다.
+. btn:[Apply]를 누르면 다이어그램이 용지 크기로 나뉘어 미리보기에 표시됩니다.
+. 미리보기 이미지에 마우스를 올리면 나타나는 버튼으로 페이지별 인쇄 또는 내려받기를 합니다.
+
+=== JSON 내보내기와 가져오기
+
+* menu:Files[Export to Json] : 현재 문서를 `문서이름.json` 으로 내려받습니다. 다른 PC나 브라우저로 옮기거나 백업할 때 사용합니다.
+* menu:Files[Import from Json] : 파일(`.json` 또는 `.erd9`)을 선택하고 btn:[Open]을 누르면 문서가 열립니다.
+
+.Import from Json
+image::file-import.png[Import from Json]
+
+=== 자동 저장과 복구
+
+저장하지 않은 작업은 30초마다, 그리고 페이지를 떠날 때 프로그램 내부 저장소에 자동 저장됩니다(데스크톱 앱도 같음).
+ERD9를 다시 열면 복구 여부를 묻습니다. btn:[Recover]는 실행 취소 이력까지 복구하고, btn:[Discard]는 자동 저장된 내용을 삭제합니다.
+
+.저장하지 않은 작업 복구
+image::file-recovery.png[Recover unsaved work]
+
+[[addons]]
+== 부가 기능 (Add-ons)
+
+.Add-ons 메뉴
+image::menu-addons.png[Add-ons 메뉴,240]
+
+[[import-ddl]]
+=== Import from DDL
+
+DDL(CREATE TABLE 등)을 분석해서 ERD를 만듭니다. 테이블, 컬럼 주석, 기본키, 관계(외래키), 인덱스, CHECK 제약조건, 뷰, 시퀀스를 가져옵니다.
+MariaDB, PostgreSQL, MS-SQL 구문은 SQL 파서로 분석하고, Oracle과 파서가 읽지 못한 구문은 패턴으로 분석합니다.
+
+. DDL을 클립보드에 복사합니다.
+. menu:Add-ons[Import from DDL]을 열고 btn:[Paste]를 누릅니다. DDL의 DBMS를 선택합니다.
++
+.SQL 탭: 붙여넣은 DDL
+image::addon-importddl-sql.png[Import from DDL - SQL]
+. btn:[Preview]를 누르면 *Preview* 탭에 분석 결과가 표시됩니다.
++
+.Preview 탭: 테이블별 분석 결과
+image::addon-importddl-preview.png[Import from DDL - Preview]
+. btn:[Run (Import from DDL)] 또는 Preview 탭의 btn:[Run (Import from Preview result)]를 누르면 엔터티와 관계가 만들어집니다. 처리 내용은 *Log* 탭에 표시됩니다.
++
+.Log 탭
+image::addon-importddl-log.png[Import from DDL - Log]
+
+TIP: 가져온 엔터티는 겹치지 않게 차례로 놓입니다. <<auto-layout>>으로 정리하면 보기 좋습니다.
+
+=== Generate DDL
+
+ERD에서 DDL을 만듭니다. *All entities* (전체, 뷰와 시퀀스 포함) 또는 *Selected entities* (선택한 엔터티와 그 사이의 관계)를 고르고 btn:[Generate DDL]을 누릅니다.
+btn:[Copy code]는 DDL을 클립보드에 복사합니다.
+
+.Generate DDL
+image::addon-ddl.png[Generate DDL]
+
+=== Compare ERD / ALTER Script
+
+기준 문서와 현재 문서를 비교해서 차이와 ALTER 스크립트를 만듭니다.
+기준 문서는 *Saved file* (브라우저에 저장한 문서) 또는 *JSON file* 중에서 고르고 btn:[Compare]를 누릅니다.
+결과는 btn:[Copy script]로 복사하거나 btn:[Download .sql]로 내려받습니다.
+
+.Compare ERD / ALTER Script
+image::addon-compare-empty.png[Compare ERD]
+
+저장한 버전과 비교하려면 menu:Files[History]의 btn:[Compare]를 사용합니다(<<files>>의 이력 참조).
+
+데스크톱 앱에서는 *Saved file* 대신 *ERD9 file* 이 표시됩니다. 기본값은 현재 문서의 `.erd9` 파일이므로, 저장한 뒤 수정한 내용을 바로 비교할 수 있습니다. 다른 파일은 btn:[Choose...]로 고릅니다.
+
+.데스크톱 앱: 저장한 파일과 비교 (저장 후 REVIEW 삭제)
+image::addon-compare-desktop.png[Compare ERD - 데스크톱 앱]
+
+NOTE: 테이블과 컬럼은 내부 ID가 같으면 같은 객체로 보고, ID가 다르면 이름으로 대응시킵니다. 그래서 같은 문서의 이전 버전과 비교하면 이름 변경을 `RENAME` 으로 인식합니다. 스크립트는 실행하기 전에 반드시 검토하십시오.
+
+=== Table Description
+
+테이블 정의서를 만듭니다. 범위를 고르고 btn:[Generate Table Description]을 누릅니다.
+btn:[Copy Data]로 복사하거나 btn:[Markdown], btn:[HTML], btn:[Excel] 파일로 내려받습니다.
+정의서에는 테이블별 컬럼 목록과 인덱스, 외래키 목록이 포함됩니다.
+
+.Table Description (외래키 목록 부분)
+image::addon-tabledesc.png[Table Description]
+
+=== Detect Missing Relationship
+
+관계를 점검합니다.
+
+* *Missing* : 테이블 사이에 같은 이름의 컬럼이 있는데 관계가 없는 경우를 찾습니다. *Match data type* 을 선택하면 데이터 타입까지 같은 경우만 찾습니다. 행을 선택하고 btn:[Make Relationship for selected rows]를 누르면 관계를 만듭니다.
+* *Not Match* : 관계가 있는 두 테이블의 컬럼 이름이나 데이터 타입이 다른 경우를 찾습니다.
+
+.Missing: REVIEW.CUST_NO에 CUSTOMER와의 관계가 없음
+image::addon-detect-missing.png[Detect Missing Relationship - Missing]
+
+.Not Match: 문제가 없으면 빈 목록
+image::addon-detect-notmatch.png[Detect Missing Relationship - Not Match]
+
+=== Generate Logical Names
+
+물리명을 `_` 로 나눈 단어를 사전에서 찾아 논리명(한글 이름)을 만듭니다. 논리명이 없는 DDL이나 데이터베이스를 가져왔을 때 사용합니다.
+
+. 사용할 사전을 선택합니다: *English → Korean*, *English abbreviation → Korean*
+. 옵션을 고릅니다.
+** *Overwrite existing logical names* : 이미 있는 논리명도 바꿈
+** *Include table names* : 테이블 이름도 생성
+. 범위를 고르고 btn:[Generate Logical Names]를 누르면 결과가 미리보기로 표시됩니다.
+. 반영할 항목을 선택하고 btn:[Apply]를 누릅니다.
+
+.Generate Logical Names (Employee 샘플)
+image::addon-logicalnames.png[Generate Logical Names]
+
+=== Make ERD with AI
+
+AI에게 업무 영역을 설명하면 엔터티 구조를 만들어 줍니다. 자세한 내용은 <<ai>>를 참조하십시오.
+
+[[auto-layout]]
+=== Auto Layout
+
+현재 페이지의 엔터티와 글상자를 관계에 따라 자동으로 배치합니다. 실행 취소(kbd:[Ctrl+Z])로 되돌릴 수 있습니다.
+
+.자동 배치 전 (DDL을 가져온 직후)
+image::autolayout-before.png[자동 배치 전]
+
+.자동 배치 후
+image::autolayout-after.png[자동 배치 후]
+
+=== Views & Sequences
+
+뷰와 시퀀스는 다이어그램에 그려지지 않지만 문서와 함께 저장되고, DDL 생성(All entities)과 ALTER 스크립트, Forward Engineering에 포함됩니다.
+
+* 왼쪽 목록에서 항목을 선택해 수정하고 btn:[Apply]를 누릅니다.
+* btn:[New]로 새 항목을 입력하고, btn:[Delete]로 삭제합니다.
+* 마지막에 btn:[Save]를 눌러 문서에 반영합니다.
+
+.Views 탭
+image::addon-views.png[Views]
+
+.Sequences 탭 (시작 값, 증가 값, 최솟값, 최댓값, Cycle)
+image::addon-sequences.png[Sequences]
+
+[[standards]]
+=== Domains & Standards
+
+도메인과 표준 사전(단어, 용어)을 관리하고, 컬럼이 표준을 따르는지 검사합니다. 모두 문서와 함께 저장됩니다.
+각 탭에서 btn:[Add]로 항목을 추가하고, btn:[Import CSV] / btn:[Export CSV] 로 Excel에서 편집하거나 다른 문서와 공유합니다. 마지막에 btn:[Save]를 누릅니다.
+
+[[domains]]
+==== Domains
+
+도메인은 여러 컬럼이 함께 쓰는 데이터 타입, 기본값, NOT NULL 설정입니다. 도메인을 바꾸면 그 도메인을 사용하는 모든 컬럼이 함께 바뀝니다. *Used* 는 도메인을 사용하는 컬럼 수입니다.
+
+.Domains 탭
+image::std-domains.png[Domains]
+
+Entity 다이얼로그의 *Domain* 셀을 클릭해 도메인을 고르면 데이터 타입, 기본값, NOT NULL이 도메인 값으로 채워집니다.
+데이터 타입이나 기본값, NOT NULL을 직접 바꾸면 도메인 연결이 해제됩니다.
+
+.컬럼에 '상태' 도메인 지정 (VARCHAR(10), NOT NULL)
+image::entity-domain.png[도메인 지정]
+
+==== Words
+
+표준 단어 사전입니다(예: 고객 → CUST, 번호 → NO). 용어에 없는 논리명은 단어를 조합해서 컬럼명을 만듭니다(고객주문번호 → CUST_ORD_NO).
+
+.Words 탭
+image::std-words.png[Words]
+
+==== Terms
+
+표준 용어 사전입니다(예: 고객번호 → CUST_NO, 도메인 지정 가능).
+
+* btn:[Fill Physical] : 물리명이 없는 용어의 물리명을 단어로 채웁니다.
+* btn:[Extract from ERD] : 현재 ERD의 컬럼(논리명 → 컬럼명)을 용어로 추가합니다. 기존 ERD에서 사전을 시작할 때 사용합니다.
+
+.Terms 탭 (Extract from ERD로 추출)
+image::std-terms.png[Terms]
+
+==== Check
+
+btn:[Check]를 누르면 모든 컬럼을 도메인과 사전으로 검사해서 표준을 따르지 않는 컬럼과 제안을 보여줍니다.
+수정할 항목을 선택하고 btn:[Apply Selected]를 누르면 사전을 저장하고 제안한 컬럼명과 도메인을 반영합니다.
+
+.Check 탭: 단어 사전과 다른 컬럼명 5개
+image::std-check.png[Check]
+
+==== Entity 다이얼로그에서 표준 사용
+
+표준 사전이 있으면 Entity 다이얼로그에서 다음 기능을 사용할 수 있습니다.
+
+* 컬럼명이나 속성명을 입력하면 일치하는 용어가 추천됩니다.
++
+.용어 추천 ('결제' 입력)
+image::entity-term-suggest.png[용어 추천]
+* 용어에 없는 속성명은 단어를 조합해서 컬럼명을 만듭니다. '결제상태'를 입력하면 `PAY_STATUS` 가 채워집니다.
++
+.단어로 만든 컬럼명
+image::entity-term-convert.png[단어 조합]
+* btn:[Standardize]를 누르면 모든 컬럼의 이름(과 도메인)을 속성명 기준으로 표준에 맞게 바꿉니다. 사전에 없는 단어는 알려 줍니다.
+
+[[templates]]
+=== Column Templates
+
+등록일시, 등록자처럼 여러 테이블에 반복되는 컬럼을 묶어 둔 템플릿입니다. 기본으로 *Audit columns* 와 *Soft delete* 가 있습니다.
+btn:[New]로 템플릿을 만들고, 이름과 컬럼을 입력한 뒤 btn:[Save]를 누릅니다. 템플릿은 이 브라우저에 저장되므로 모든 문서에서 사용할 수 있습니다.
+
+.Column Templates
+image::addon-templates.png[Column Templates]
+
+Entity 다이얼로그의 *+ Template columns* 에서 템플릿을 고르면 컬럼이 한꺼번에 추가됩니다. 이미 있는 컬럼은 추가하지 않으며, 문서의 DBMS에 맞게 타입을 변환합니다.
+
+.Audit columns 템플릿을 추가한 DELIVERY
+image::entity-template.png[템플릿 컬럼 추가]
+
+[[ai]]
+== AI 기능
+
+OpenAI(ChatGPT), Anthropic(Claude), Google(Gemini) 중 하나의 API 키가 필요합니다.
+키는 현재 창에서만 기억하며(창을 닫으면 사라짐), 브라우저에서 선택한 AI 서비스로 직접 전송됩니다.
+
+=== AI 설정
+
+menu:Add-ons[Make ERD with AI]를 처음 열거나 채팅 창의 *AI settings* 를 누르면 설정 창이 열립니다.
+
+* *AI Service* : AI 서비스
+* *API Key* : 발급받은 API 키
+* *Model* : 추천 모델을 고르거나 모델 이름을 직접 입력
+* *Comment Language* : 생성할 논리명(주석)의 언어 (예: korean)
+
+btn:[Start]를 누르면 키를 확인한 뒤 설정을 저장합니다.
+
+.AI Settings
+image::ai-settings.png[AI Settings]
+
+CAUTION: 공용 PC에서는 API 키를 입력하지 마십시오. AI는 이전 대화를 기억하지 않으므로 요청할 때마다 전체 내용을 적어야 합니다.
+
+=== Make ERD with AI
+
+만들 업무 영역을 입력하고 btn:[Send]를 누르면 AI가 정해진 JSON 형식으로 엔터티 구조를 제안합니다.
+결과를 확인하고 btn:[Make ERD]를 누르면 엔터티와 관계가 만들어집니다.
+
+.Make ERD with AI
+image::ai-make-erd.png[Make ERD with AI]
+
+=== AI 채팅
+
+오른쪽 아래의 채팅 버튼을 누르면 채팅 창이 열립니다.
+
+* *Create Entity* : 엔터티 구조를 요청합니다(예: 쇼핑몰).
+* *ERD review and feedback* : 현재 ERD에 대한 평가를 받습니다.
+* *Free Talk* : ERD를 바탕으로 무엇이든 요청합니다(예: MyBatis 코드 생성).
+
+ERD review와 Free Talk는 *All entities* 또는 *Selected entities* 를 대상으로 합니다.
+
+.AI 채팅 창
+image::ai-chat.png[AI 채팅]
+
+[[database]]
+== 데이터베이스 연결 (데스크톱 앱)
+
+데스크톱 앱은 문서를 `.erd9` 파일로 저장하고 열며(<<desktop-files>> 참조), *Database* 메뉴가 있습니다. 데이터베이스 서버에 연결해서 ERD로 테이블을 만들거나, 기존 데이터베이스로 ERD를 만들거나, 둘을 비교해서 맞출 수 있습니다.
+
+.데스크톱 앱 (Windows)
+image::tauri-window.png[ERD9 데스크톱 앱]
+
+.Database 메뉴
+image::menu-database.png[Database 메뉴,260]
+
+[cols="1,4",options="header"]
+.지원 DBMS
+|===
+| DBMS | 비고
+| MariaDB / MySQL | 기본 포트 3306
+| PostgreSQL | 기본 포트 5432, 스키마 기본값 public
+| MS-SQL | 기본 포트 1433, 스키마 기본값 dbo. 자체 서명 인증서는 *Trust the server certificate* 선택
+| Oracle | 기본 포트 1521, *Database* 대신 *Service name* 입력. PC에 https://www.oracle.com/database/technologies/instant-client.html[Oracle Instant Client]가 필요합니다.
+|===
+
+=== 연결 설정
+
+세 기능 모두 다이얼로그 위쪽에서 연결 정보를 입력합니다.
+
+[cols="1,4",options="header"]
+|===
+| 항목 | 설명
+| DBMS | 연결할 DBMS. 바꾸면 포트가 그 DBMS의 기본값으로 바뀝니다.
+| Host / Port | 서버 주소와 포트
+| Database | 데이터베이스 이름 (Oracle은 Service name)
+| Schema | 비워 두면 기본값을 사용합니다 (MariaDB: database, PostgreSQL: public, MS-SQL: dbo, Oracle: 사용자)
+| User / Password | 접속 계정
+|===
+
+btn:[Test connection]으로 연결을 확인할 수 있습니다.
+연결 설정은 비밀번호를 제외하고 저장되며, 비밀번호는 앱을 닫을 때까지만 기억합니다.
+
+NOTE: 연결의 DBMS와 문서의 DBMS가 다르면 데이터 타입이 맞지 않을 수 있다는 확인 메시지가 나타납니다.
+
+=== Forward Engineering
+
+ERD로 데이터베이스 서버에 테이블, 관계, 인덱스, 뷰, 시퀀스를 만듭니다.
+
+. menu:Database[Forward Engineering]을 열고 연결 정보를 입력합니다.
+. 옵션을 고릅니다. 옵션을 바꾸면 스크립트가 다시 만들어집니다.
+** *All tables* / *Selected tables* : 전체 또는 선택한 엔터티
+** *Drop existing objects first* : 기존 객체를 먼저 삭제하는 구문 추가
+** *Stop on error* : 오류가 나면 실행 중단
+. 아래의 스크립트를 검토합니다. 필요하면 직접 수정할 수 있습니다.
++
+.Forward Engineering: 생성된 스크립트
+image::db-forward.png[Forward Engineering]
+. btn:[Execute]를 누르고 확인하면 구문을 하나씩 실행하며 결과를 로그에 표시합니다.
++
+.실행 결과 (기존 객체가 없어 DROP 구문은 SKIP, 나머지 19개 실행)
+image::db-forward-done.png[Forward Engineering 실행 결과]
+
+로그의 의미::
+* `OK` : 실행 성공
+* `SKIP` : DROP 구문의 오류(없는 객체 삭제 등)는 무시하고 계속 진행
+* `ERROR` : 실행 실패. *Stop on error* 가 켜져 있으면 중단
+
+=== Reverse Engineering
+
+기존 데이터베이스의 테이블, 컬럼, 주석, 기본키, 관계, 인덱스, CHECK 제약조건, 뷰, 시퀀스를 읽어 ERD를 만듭니다.
+
+. menu:Database[Reverse Engineering]을 열고 연결 정보를 입력합니다.
+. 옵션을 고릅니다.
+** *Include views and sequences* : 뷰와 시퀀스도 가져오기
+** *Add to the current document* / *New document* : 현재 문서에 추가 또는 새 문서로
+. btn:[Read schema]를 누르면 테이블 목록이 표시됩니다. 이미 ERD에 있는 테이블은 `already in the ERD` 로 표시되고 선택이 해제됩니다.
++
+.Reverse Engineering: 읽어 온 테이블 목록
+image::db-reverse.png[Reverse Engineering]
+. 가져올 테이블을 선택하고 btn:[Import]를 누릅니다. 선택한 테이블 사이의 관계도 함께 가져옵니다.
++
+.가져온 결과
+image::db-reverse-result.png[Reverse Engineering 결과]
+
+TIP: 가져온 뒤 menu:Add-ons[Auto Layout]으로 배치하고, 논리명이 없으면 menu:Add-ons[Generate Logical Names]를 사용하십시오.
+
+.Auto Layout으로 정리한 결과
+image::db-reverse-layout.png[자동 배치]
+
+=== Compare and Merge
+
+ERD와 데이터베이스를 비교해서 차이(테이블, 뷰, 시퀀스)를 모두 보여주고, 항목마다 원하는 방향으로 반영합니다.
+아래 예는 Forward Engineering에 사용한 쇼핑몰 ERD에서 `CUSTOMER` 에 `BIRTH_DT` 컬럼을 추가하고, 그 사이 데이터베이스에는 `product.ORIGIN_NM` 컬럼과 `faq` 테이블이 추가된 경우입니다.
+
+테이블과 컬럼, 뷰, 시퀀스는 이름으로 대응시키며 대소문자는 구분하지 않습니다. Windows의 MariaDB처럼 데이터베이스가 테이블 이름을 소문자로 돌려주어도 ERD의 대문자 이름과 같은 테이블로 보며, 스크립트에는 데이터베이스의 실제 이름을 사용합니다. 데이터베이스가 다시 써서 돌려주는 표기(정수의 표시 너비 `INT(11)`, 기본값 `current_timestamp()`, 뷰 쿼리의 따옴표와 괄호)도 차이로 보지 않습니다.
+
+. menu:Database[Compare and Merge]를 열고 연결 정보를 입력한 뒤 btn:[Compare]를 누릅니다.
++
+.Compare and Merge: 차이 목록
+image::db-sync.png[Compare and Merge]
+. 항목마다 *Apply* 에서 반영 방향을 고릅니다. btn:[All ERD → DB], btn:[All DB → ERD], btn:[Skip all]로 한꺼번에 바꿀 수 있습니다.
++
+[cols="1,2,2",options="header"]
+|===
+| 상태 | ERD → DB | DB → ERD
+| ERD only (ERD에만 있음) | Create in DB (DB에 생성) | Delete from ERD (ERD에서 삭제)
+| DB only (DB에만 있음) | Drop from DB (DB에서 삭제) | Add to ERD (ERD에 추가)
+| Different (다름) | ERD → DB (ALTER 실행) | DB → ERD (ERD 수정)
+|===
++
+모든 항목에서 *Skip* 을 고르면 반영하지 않습니다.
+*Script to run on the database* 에 ERD → DB 항목의 ALTER 스크립트가 표시됩니다.
++
+.반영 방향 선택: customer는 ERD → DB, faq와 product는 DB → ERD (이름은 데이터베이스의 소문자 이름으로 표시)
+image::db-sync-direction.png[반영 방향 선택]
+. btn:[Apply]를 누르고 확인하면 데이터베이스에 스크립트를 실행하고 ERD를 수정한 뒤, 다시 비교해서 남은 차이를 보여줍니다.
++
+.반영 후: 차이 없음
+image::db-sync-done.png[반영 결과]
++
+.ERD에 faq 테이블과 PRODUCT.ORIGIN_NM이 추가되고(ERD의 이름 표기는 유지) 데이터베이스에는 customer.BIRTH_DT가 추가됨
+image::db-sync-result.png[반영 후 ERD]
+
+IMPORTANT: 이름으로 대응시키므로 이름을 바꾼 컬럼은 삭제와 추가로 표시됩니다. 데이터베이스 스크립트가 실패하면 ERD는 바뀌지 않으며, ERD를 수정하면 실행 취소 이력이 지워집니다. 운영 데이터베이스에 반영하기 전에 스크립트를 반드시 검토하고 백업하십시오.
+
+[appendix]
+== 단축키
+
+[cols="2,3",options="header"]
+|===
+| 키 | 동작
+
+| kbd:[Ctrl++] / kbd:[Ctrl+-] / kbd:[Ctrl] + 마우스 휠 / 터치패드 확대 동작 | 확대 / 축소
+| kbd:[Ctrl+0] | 원래 크기
+| 마우스 휠 / kbd:[Shift] + 마우스 휠 | 위아래 / 좌우 스크롤
+| kbd:[Space] + 끌기 / 마우스 가운데 버튼 끌기 | 화면 이동
+| kbd:[Del] | 선택한 엔터티 또는 관계 삭제
+| kbd:[Ctrl+A] | 모두 선택
+| kbd:[Ctrl+C] / kbd:[Ctrl+V] | 엔터티 복사 / 붙여넣기
+| kbd:[Ctrl+Z] / kbd:[Ctrl+Y] | 실행 취소 / 다시 실행
+| kbd:[Ctrl+S] | 문서 저장 (웹: 브라우저 저장소, 데스크톱 앱: `.erd9` 파일)
+| kbd:[Ctrl+Shift+S] | 다른 이름으로 저장 (데스크톱 앱)
+| kbd:[Ctrl+F] | 엔터티 찾기
+| kbd:[Esc] | 다이얼로그 닫기
+|===
+
+[appendix]
+== 자주 묻는 질문
+
+문서는 어디에 저장되나요?::
+웹 버전은 브라우저 내부 저장소(IndexedDB)에 저장됩니다. 다른 PC로 옮기거나 백업하려면 menu:Files[Export to Json]을 사용하십시오. 데스크톱 앱은 사용자가 고른 위치의 `.erd9` 파일에 저장합니다.
+
+웹 버전에는 Database 메뉴가 없나요?::
+웹 브라우저는 데이터베이스 서버에 직접 연결할 수 없으므로 Database 메뉴는 데스크톱 앱에만 있습니다. 웹 버전에서는 <<import-ddl>>와 Generate DDL, Compare ERD / ALTER Script로 DDL을 주고받을 수 있습니다.
+
+실수로 지운 엔터티를 되살릴 수 있나요?::
+kbd:[Ctrl+Z] 로 되돌릴 수 있습니다. 저장한 문서라면 menu:Files[History]에서 이전 버전을 복원할 수도 있습니다.

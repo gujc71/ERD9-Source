@@ -1,0 +1,589 @@
+{
+  "version": 3,
+  "dbms": "mariadb",
+  "entityData": {
+    "erdbffb19c780b4b959899e7b84be36485": {
+      "x1": 79,
+      "y1": 45,
+      "x2": 270,
+      "y2": 203,
+      "data": {
+        "physicalName": "CUSTOMER",
+        "logicalName": "고객",
+        "keys": [
+          {
+            "id": "f73f4ed5f232043d68a4c397d3b32797b",
+            "column": "CUST_NO",
+            "dataType": "INT",
+            "notNull": true,
+            "isPK": true,
+            "ai": true,
+            "comment": "고객번호"
+          }
+        ],
+        "fields": [
+          {
+            "id": "f26d66c65f0bd4cbeaf9881df92bbde87",
+            "column": "CUST_NM",
+            "dataType": "VARCHAR(50)",
+            "notNull": true,
+            "isPK": false,
+            "comment": "고객명"
+          },
+          {
+            "id": "f3162aee05ce34c04a5e46030ad1f2a4b",
+            "column": "EMAIL",
+            "dataType": "VARCHAR(100)",
+            "notNull": true,
+            "isPK": false,
+            "comment": "이메일"
+          },
+          {
+            "id": "fc6de1f5b4eaf46f49e58103e3c6758e3",
+            "column": "PHONE_NO",
+            "dataType": "VARCHAR(20)",
+            "notNull": false,
+            "isPK": false,
+            "comment": "전화번호"
+          },
+          {
+            "id": "f9584f56a9abb41ae9c335108cda9d4fe",
+            "column": "GRADE_CD",
+            "dataType": "CHAR(2)",
+            "notNull": true,
+            "isPK": false,
+            "defaultValue": "'01'",
+            "comment": "등급코드"
+          },
+          {
+            "id": "fa05133470aae4d8b814d5f400ff16f5d",
+            "column": "REG_DT",
+            "dataType": "DATETIME",
+            "notNull": true,
+            "isPK": false,
+            "defaultValue": "CURRENT_TIMESTAMP",
+            "comment": "등록일시"
+          }
+        ],
+        "indexes": [
+          {
+            "name": "UK_CUSTOMER_EMAIL",
+            "fields": "EMAIL",
+            "unique": true
+          }
+        ]
+      }
+    },
+    "erea50b5bde74c49e58142870d8c68ef89": {
+      "x1": 20,
+      "y1": 445,
+      "x2": 270,
+      "y2": 543,
+      "data": {
+        "physicalName": "CATEGORY",
+        "logicalName": "상품분류",
+        "keys": [
+          {
+            "id": "f87192a7addf34bf7a96a88f27960aa8b",
+            "column": "CATEGORY_ID",
+            "dataType": "INT",
+            "notNull": true,
+            "isPK": true,
+            "comment": "분류ID"
+          }
+        ],
+        "fields": [
+          {
+            "id": "f39f4b50f42d34a16958cc2854faeccd0",
+            "column": "CATEGORY_NM",
+            "dataType": "VARCHAR(50)",
+            "notNull": true,
+            "isPK": false,
+            "comment": "분류명"
+          },
+          {
+            "id": "f202c0c9d9ed147d5a3ed41a24ec76f7e",
+            "column": "PARENT_CATEGORY_ID",
+            "dataType": "INT",
+            "notNull": false,
+            "isPK": false,
+            "comment": "상위분류ID",
+            "parent": "CATEGORY",
+            "parentID": "f87192a7addf34bf7a96a88f27960aa8b"
+          }
+        ]
+      }
+    },
+    "erdd076e1b7b1d4c2aaf9ba359b1bde444": {
+      "x1": 357,
+      "y1": 415,
+      "x2": 564,
+      "y2": 573,
+      "data": {
+        "physicalName": "PRODUCT",
+        "logicalName": "상품",
+        "keys": [
+          {
+            "id": "fcfb7fc30754648e1b92df2417ce2e9c4",
+            "column": "PRODUCT_ID",
+            "dataType": "INT",
+            "notNull": true,
+            "isPK": true,
+            "ai": true,
+            "comment": "상품ID"
+          }
+        ],
+        "fields": [
+          {
+            "id": "f09834bd67fd641fcb334bf5517defbc4",
+            "column": "CATEGORY_ID",
+            "dataType": "INT",
+            "notNull": true,
+            "isPK": false,
+            "comment": "분류ID",
+            "parent": "CATEGORY",
+            "parentID": "f87192a7addf34bf7a96a88f27960aa8b"
+          },
+          {
+            "id": "fa4971a73148047debfd48948a7509475",
+            "column": "PRODUCT_NM",
+            "dataType": "VARCHAR(100)",
+            "notNull": true,
+            "isPK": false,
+            "comment": "상품명"
+          },
+          {
+            "id": "f06e421a2b0f74b9db493aeae7b2324ac",
+            "column": "PRICE",
+            "dataType": "DECIMAL(12,0)",
+            "notNull": true,
+            "isPK": false,
+            "defaultValue": 0,
+            "comment": "판매가격"
+          },
+          {
+            "id": "f4ac84e33b27646e697908ccd1e53aa09",
+            "column": "STOCK_QTY",
+            "dataType": "INT",
+            "notNull": true,
+            "isPK": false,
+            "defaultValue": 0,
+            "comment": "재고수량"
+          },
+          {
+            "id": "f74e86c7d012543868a2406790e449286",
+            "column": "REG_DT",
+            "dataType": "DATETIME",
+            "notNull": true,
+            "isPK": false,
+            "defaultValue": "CURRENT_TIMESTAMP",
+            "comment": "등록일시"
+          }
+        ],
+        "indexes": [
+          {
+            "name": "IX_PRODUCT_NM",
+            "fields": "PRODUCT_NM"
+          }
+        ],
+        "checks": [
+          {
+            "name": "CK_PRODUCT_PRICE",
+            "expression": "PRICE >= 0"
+          }
+        ]
+      }
+    },
+    "er9b4d56dea74643aca3c69512fc56c71c": {
+      "x1": 350,
+      "y1": 55,
+      "x2": 567,
+      "y2": 193,
+      "data": {
+        "physicalName": "ORDERS",
+        "logicalName": "주문",
+        "keys": [
+          {
+            "id": "f90de25cd9b984545994b123d91a10ba5",
+            "column": "ORDER_NO",
+            "dataType": "BIGINT",
+            "notNull": true,
+            "isPK": true,
+            "comment": "주문번호"
+          }
+        ],
+        "fields": [
+          {
+            "id": "fb9efd9d1a1fb4bb799e10634ecf65def",
+            "column": "CUST_NO",
+            "dataType": "INT",
+            "notNull": true,
+            "isPK": false,
+            "comment": "고객번호",
+            "parent": "CUSTOMER",
+            "parentID": "f73f4ed5f232043d68a4c397d3b32797b"
+          },
+          {
+            "id": "feaed1f49b212417f8fa0e6dcf5cb5b36",
+            "column": "ORDER_DT",
+            "dataType": "DATETIME",
+            "notNull": true,
+            "isPK": false,
+            "comment": "주문일시"
+          },
+          {
+            "id": "f56ec58e7eea945f2b09abe54094e13f3",
+            "column": "ORDER_STATUS",
+            "dataType": "VARCHAR(10)",
+            "notNull": true,
+            "isPK": false,
+            "comment": "주문상태"
+          },
+          {
+            "id": "fc37750bdac6a4b5ba659f7cd996d397f",
+            "column": "TOTAL_AMT",
+            "dataType": "DECIMAL(12,0)",
+            "notNull": true,
+            "isPK": false,
+            "defaultValue": 0,
+            "comment": "주문금액"
+          }
+        ]
+      }
+    },
+    "er0c31beb051e44ae1bb930b20414a695f": {
+      "x1": 647,
+      "y1": 376,
+      "x2": 845,
+      "y2": 514,
+      "data": {
+        "physicalName": "ORDER_ITEM",
+        "logicalName": "주문상품",
+        "keys": [
+          {
+            "id": "f9ee20393647344e78f38d2e514863197",
+            "column": "ORDER_NO",
+            "dataType": "BIGINT",
+            "notNull": true,
+            "isPK": true,
+            "comment": "주문번호",
+            "parent": "ORDERS",
+            "parentID": "f90de25cd9b984545994b123d91a10ba5"
+          },
+          {
+            "id": "fef7a4645bf774497a4f4338ab23193bf",
+            "column": "ITEM_SEQ",
+            "dataType": "INT",
+            "notNull": true,
+            "isPK": true,
+            "comment": "항목순번"
+          }
+        ],
+        "fields": [
+          {
+            "id": "f8407a1894c474a1797b5a184cd39c141",
+            "column": "PRODUCT_ID",
+            "dataType": "INT",
+            "notNull": true,
+            "isPK": false,
+            "comment": "상품ID",
+            "parent": "PRODUCT",
+            "parentID": "fcfb7fc30754648e1b92df2417ce2e9c4"
+          },
+          {
+            "id": "fef368f6d439e43f69f219b78a0ab60ea",
+            "column": "ORDER_QTY",
+            "dataType": "INT",
+            "notNull": true,
+            "isPK": false,
+            "defaultValue": 1,
+            "comment": "주문수량"
+          },
+          {
+            "id": "f8fc8b507e23f43b6a5f41bdaf2cfb3ad",
+            "column": "UNIT_PRICE",
+            "dataType": "DECIMAL(12,0)",
+            "notNull": true,
+            "isPK": false,
+            "comment": "단가"
+          }
+        ]
+      }
+    },
+    "er8100007706da496c846675eaca3b297e": {
+      "x1": 647,
+      "y1": 20,
+      "x2": 849,
+      "y2": 158,
+      "data": {
+        "physicalName": "PAYMENT",
+        "logicalName": "결제",
+        "keys": [
+          {
+            "id": "f513a5feb666246059de92c710ac36b8a",
+            "column": "PAYMENT_ID",
+            "dataType": "BIGINT",
+            "notNull": true,
+            "isPK": true,
+            "ai": true,
+            "comment": "결제ID"
+          }
+        ],
+        "fields": [
+          {
+            "id": "f79df2cf4f09242869c87f829a1ec7c30",
+            "column": "ORDER_NO",
+            "dataType": "BIGINT",
+            "notNull": true,
+            "isPK": false,
+            "comment": "주문번호",
+            "parent": "ORDERS",
+            "parentID": "f90de25cd9b984545994b123d91a10ba5"
+          },
+          {
+            "id": "fab693f22dc7948e39e10906c8eb65f6d",
+            "column": "PAY_METHOD",
+            "dataType": "VARCHAR(10)",
+            "notNull": true,
+            "isPK": false,
+            "comment": "결제수단"
+          },
+          {
+            "id": "f6974cc32a8cd4c38800a9fc0066c7f43",
+            "column": "PAY_AMT",
+            "dataType": "DECIMAL(12,0)",
+            "notNull": true,
+            "isPK": false,
+            "comment": "결제금액"
+          },
+          {
+            "id": "f3f9d33846839455eb47592e59573b1e7",
+            "column": "PAY_DT",
+            "dataType": "DATETIME",
+            "notNull": true,
+            "isPK": false,
+            "comment": "결제일시"
+          }
+        ]
+      }
+    },
+    "era47bef7336b04837bd4e8602c549e0c5": {
+      "x1": 647,
+      "y1": 198,
+      "x2": 880,
+      "y2": 336,
+      "data": {
+        "physicalName": "DELIVERY",
+        "logicalName": "배송",
+        "keys": [
+          {
+            "id": "f4ca67523dab64b1482d40f47aab235cb",
+            "column": "DELIVERY_ID",
+            "dataType": "BIGINT",
+            "notNull": true,
+            "isPK": true,
+            "ai": true,
+            "comment": "배송ID"
+          }
+        ],
+        "fields": [
+          {
+            "id": "fe7049c1afc304094aed312c243b7937a",
+            "column": "ORDER_NO",
+            "dataType": "BIGINT",
+            "notNull": true,
+            "isPK": false,
+            "comment": "주문번호",
+            "parent": "ORDERS",
+            "parentID": "f90de25cd9b984545994b123d91a10ba5"
+          },
+          {
+            "id": "fb7ec9943871246ed9f408ba4a97aea0c",
+            "column": "RECEIVER_NM",
+            "dataType": "VARCHAR(50)",
+            "notNull": true,
+            "isPK": false,
+            "comment": "수령인명"
+          },
+          {
+            "id": "f13c0c1d18e3d43448d606d1dcc06c88c",
+            "column": "ADDRESS",
+            "dataType": "VARCHAR(200)",
+            "notNull": true,
+            "isPK": false,
+            "comment": "배송주소"
+          },
+          {
+            "id": "fff43d94f22a048b3a7c7ecdaf14af2e9",
+            "column": "DELIVERY_STATUS",
+            "dataType": "VARCHAR(10)",
+            "notNull": true,
+            "isPK": false,
+            "comment": "배송상태"
+          }
+        ]
+      }
+    },
+    "er34a59aca680e430dbadd615d6a7d3d3d": {
+      "x1": 647,
+      "y1": 554,
+      "x2": 824,
+      "y2": 712,
+      "data": {
+        "physicalName": "REVIEW",
+        "logicalName": "상품리뷰",
+        "keys": [
+          {
+            "id": "f8c48c73fddf14571ba477ba7b445c5d5",
+            "column": "REVIEW_ID",
+            "dataType": "BIGINT",
+            "notNull": true,
+            "isPK": true,
+            "ai": true,
+            "comment": "리뷰ID"
+          }
+        ],
+        "fields": [
+          {
+            "id": "f0e779c4460f6411b8ea8aaee8499e49d",
+            "column": "PRODUCT_ID",
+            "dataType": "INT",
+            "notNull": true,
+            "isPK": false,
+            "comment": "상품ID",
+            "parent": "PRODUCT",
+            "parentID": "fcfb7fc30754648e1b92df2417ce2e9c4"
+          },
+          {
+            "id": "f3a132bcd686e4e0bb0c7143e36f663f7",
+            "column": "CUST_NO",
+            "dataType": "INT",
+            "notNull": true,
+            "isPK": false,
+            "comment": "고객번호"
+          },
+          {
+            "id": "f1b3772734006426b9a7349b7e3d13a3a",
+            "column": "RATING",
+            "dataType": "TINYINT",
+            "notNull": true,
+            "isPK": false,
+            "comment": "평점"
+          },
+          {
+            "id": "f54f6d2a2a9f744bb94fb4f2d1a4e6917",
+            "column": "CONTENT",
+            "dataType": "TEXT",
+            "notNull": false,
+            "isPK": false,
+            "comment": "리뷰내용"
+          },
+          {
+            "id": "f8afeae47d1854c8ba8b98ea5a92c439a",
+            "column": "REG_DT",
+            "dataType": "DATETIME",
+            "notNull": true,
+            "isPK": false,
+            "defaultValue": "CURRENT_TIMESTAMP",
+            "comment": "등록일시"
+          }
+        ],
+        "checks": [
+          {
+            "name": "CK_REVIEW_RATING",
+            "expression": "RATING BETWEEN 1 AND 5"
+          }
+        ]
+      }
+    }
+  },
+  "relationData": [
+    {
+      "id": "r34611f9eae2e40cf889d7a511e2260db",
+      "parent": "erea50b5bde74c49e58142870d8c68ef89",
+      "child": "erea50b5bde74c49e58142870d8c68ef89",
+      "relationType": "ak",
+      "relationCard": "many",
+      "relationSelect": "oo",
+      "name": "FK_CATEGORY_PARENT"
+    },
+    {
+      "id": "rf4fab933916e4581abc64894eb959869",
+      "parent": "erea50b5bde74c49e58142870d8c68ef89",
+      "child": "erdd076e1b7b1d4c2aaf9ba359b1bde444",
+      "relationType": "ak",
+      "relationCard": "many",
+      "relationSelect": "mm",
+      "name": "FK_PRODUCT_CATEGORY"
+    },
+    {
+      "id": "re920084f482c431ea23904f288dd2779",
+      "parent": "erdbffb19c780b4b959899e7b84be36485",
+      "child": "er9b4d56dea74643aca3c69512fc56c71c",
+      "relationType": "ak",
+      "relationCard": "many",
+      "relationSelect": "mm",
+      "name": "FK_ORDERS_CUSTOMER"
+    },
+    {
+      "id": "re07f5fbbbaa74255be779c0b6dfd872c",
+      "parent": "er9b4d56dea74643aca3c69512fc56c71c",
+      "child": "er0c31beb051e44ae1bb930b20414a695f",
+      "relationType": "pk",
+      "relationCard": "many",
+      "relationSelect": "mm",
+      "onDelete": "CASCADE",
+      "name": "FK_ORDER_ITEM_ORDERS"
+    },
+    {
+      "id": "r0fda907ede4940eb87da8f76da3d3495",
+      "parent": "erdd076e1b7b1d4c2aaf9ba359b1bde444",
+      "child": "er0c31beb051e44ae1bb930b20414a695f",
+      "relationType": "ak",
+      "relationCard": "many",
+      "relationSelect": "mm",
+      "name": "FK_ORDER_ITEM_PRODUCT"
+    },
+    {
+      "id": "r942d451c90214cf2b07123f3a43a1826",
+      "parent": "er9b4d56dea74643aca3c69512fc56c71c",
+      "child": "er8100007706da496c846675eaca3b297e",
+      "relationType": "ak",
+      "relationCard": "many",
+      "relationSelect": "mm",
+      "name": "FK_PAYMENT_ORDERS"
+    },
+    {
+      "id": "r9169a2a961d84228bd5df8593f0b02e7",
+      "parent": "er9b4d56dea74643aca3c69512fc56c71c",
+      "child": "era47bef7336b04837bd4e8602c549e0c5",
+      "relationType": "ak",
+      "relationCard": "many",
+      "relationSelect": "mm",
+      "name": "FK_DELIVERY_ORDERS"
+    },
+    {
+      "id": "r3f583083f9e04b42acde9b9db6acf7fd",
+      "parent": "erdd076e1b7b1d4c2aaf9ba359b1bde444",
+      "child": "er34a59aca680e430dbadd615d6a7d3d3d",
+      "relationType": "ak",
+      "relationCard": "many",
+      "relationSelect": "mm",
+      "name": "FK_REVIEW_PRODUCT"
+    }
+  ],
+  "textData": [],
+  "areaData": [],
+  "views": [
+    {
+      "id": "v07dd3622b9934f82b6ab7bca0bb7a97c",
+      "name": "V_ORDER_SUMMARY",
+      "query": "SELECT O.ORDER_NO, C.CUST_NM, O.ORDER_DT, O.TOTAL_AMT\r\n  FROM ORDERS O JOIN CUSTOMER C ON C.CUST_NO = O.CUST_NO"
+    }
+  ],
+  "sequences": [],
+  "pages": [],
+  "domains": [],
+  "words": [],
+  "terms": []
+}

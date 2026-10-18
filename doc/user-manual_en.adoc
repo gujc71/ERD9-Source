@@ -1,0 +1,976 @@
+= ERD9 User Manual
+:author: ERD9
+:revnumber: 1.0
+:revdate: 2026-10-18
+:lang: en
+:doctype: book
+:toc: left
+:toclevels: 3
+:toc-title: Contents
+:sectnums:
+:sectnumlevels: 3
+:sectanchors:
+:icons: font
+:imagesdir: images
+:chapter-signifier:
+:experimental:
+
+[preface]
+== About this manual
+
+ERD9 is a modeling tool for designing database structures by drawing tables (entities) and the relationships between them.
+It runs directly in a web browser, and the same program is also available as a Windows executable (the desktop app).
+
+This manual describes every feature of ERD9 with screenshots.
+The examples use an online shopping mall model with eight tables: customer, order, product, payment, delivery, review and so on.
+
+NOTE: The example model uses Korean logical names (entity and attribute names, which become table and column comments), and the Windows file dialogs were captured on Korean Windows. The menus and dialogs of ERD9 itself are in English. Where a Korean word matters in the text, its meaning is given in parentheses.
+
+[cols="1,3",options="header"]
+.Web version and desktop app
+|===
+| Edition | Description
+
+| Web version
+| Runs in a web browser (Chrome, Firefox, Edge). There is no login and no server storage; documents are stored in the browser (IndexedDB).
+
+| Desktop app
+| Saves and opens documents as `.erd9` files in JSON format (see <<desktop-files>>). In addition to every feature of the web version, the *Database* menu (Forward Engineering, Reverse Engineering, Compare and Merge) connects directly to database servers. A web browser cannot connect to a database server directly, so this menu exists only in the desktop app.
+|===
+
+IMPORTANT: Documents of the web version are stored only in the browser you are using. On a shared PC, delete your documents after use, and keep important documents on your PC with menu:Files[Export to Json]. The desktop app saves documents as `.erd9` files in a location you choose, so you can back them up or move them to another PC by copying the files.
+
+== Getting started
+
+=== First run
+
+When you open ERD9 for the first time, a list of samples appears.
+Select a sample and click btn:[Open] (or double-click the row) to open it.
+To start without a sample, click btn:[Close]. Select *Don't Show* to stop showing this window.
+
+.Sample list
+image::start-samples.png[ERD Samples dialog]
+
+[cols="1,1,1",options="header"]
+.Samples
+|===
+| Sample | Entities / Relationships | DBMS
+| Sakila | 16 / 20 | MySQL (MariaDB)
+| Employee | 6 / 6 | MySQL (MariaDB)
+| BikeStores | 9 / 10 | MS-SQL
+| Global fictitious company | 12 / 11 | ORACLE
+|===
+
+.The Employee sample
+image::sample-employee.png[Employee sample]
+
+NOTE: Samples are downloaded from the Internet (gujc71.github.io), so an Internet connection is required. You can open the sample list again at any time with menu:Files[Open Samples].
+
+=== Screen layout
+
+.Main screen of ERD9
+image::main-screen.png[ERD9 main screen]
+
+[cols="1,4",options="header"]
+.Parts of the screen
+|===
+| Part | Description
+
+| Document name
+| The name of the current document, shown at the top right of the logo. A new document that has not been saved is `no name`.
+
+| Files menu
+| New document, open, save, history, image export, JSON export and import (see <<files>>)
+
+| Toolbar
+| Tools for select, text box, entity, identifying relationship, non-identifying relationship, many-to-many relationship and subject area (see <<tools>>)
+
+| Logical / Physical
+| Shows logical names (business names) and/or physical names (table and column names) (see <<view-mode>>)
+
+| Attributes shown
+| All Attributes / Entity / Keys (see <<view-data>>)
+
+| DBMS
+| Target DBMS of the document: MariaDB, ORACLE, MS-SQL, PostgreSQL (see <<dbms>>)
+
+| Add-ons menu
+| Additional features such as DDL import and generation, comparison, table descriptions and standard dictionaries (see <<addons>>)
+
+| Database menu
+| Desktop app only. Features that connect to a database server (see <<database>>)
+
+| Find, theme
+| The magnifier (find) and theme (light, dark, system) buttons at the top right
+
+| Page tabs
+| `Main` and the pages you create, at the bottom of the screen (see <<pages>>)
+
+| AI chat button
+| The round button at the bottom right. Chat with AI (see <<ai>>)
+|===
+
+[[tools]]
+=== Toolbar
+
+.Toolbar
+image::toolbar-tools.png[Toolbar]
+
+[cols="1,4",options="header"]
+|===
+| Tool | How to use
+
+| Select (arrow)
+| Selects and moves shapes. Drag on an empty area to select all shapes inside the rectangle.
+
+| Text box (T)
+| Creates a text box where you click on the canvas.
+
+| Entity
+| Creates an entity where you click on the canvas.
+
+| Identifying relationship (solid line)
+| Click the parent entity, then the child entity. The parent's primary key is added to the child's primary key (PK).
+
+| Non-identifying relationship (dashed line)
+| Click the parent entity, then the child entity. The parent's primary key is added to the child as a regular column (foreign key).
+
+| Many-to-many relationship (M:N)
+| Click two entities in turn. An associative (intersection) table made of both primary keys is created and connected with two identifying relationships.
+
+| Subject area
+| Creates an area that groups related entities where you click on the canvas.
+|===
+
+== Entities
+
+=== Creating an entity
+
+Select the *Entity* tool on the toolbar and click an empty area of the canvas to create an empty entity.
+
+.A new entity
+image::entity-new.png[New entity]
+
+Double-click the entity to open the *Entity* dialog.
+Enter the table name (physical name) and the entity name (logical name), enter the columns, and click btn:[Save].
+
+.Entering the columns of a new entity
+image::entity-new-dialog.png[New entity input]
+
+=== Selecting an entity and the shape menu
+
+Click an entity to select it. A shape menu appears at its top left.
+
+* ⓧ : delete the selected shape (same as the kbd:[Del] key)
+* ⓔ : open the edit dialog (same as double-clicking)
+
+.A selected entity and the shape menu
+image::entity-selected.png[Selected entity]
+
+To select several entities, click them while holding kbd:[Shift], or drag a rectangle from an empty area.
+kbd:[Ctrl+A] selects all shapes.
+Dragging selected shapes moves them together.
+
+TIP: When only one entity is selected, drag one of its column rows up or down to change the column order.
+
+=== Entity dialog
+
+.Entity dialog
+image::entity-dialog.png[Entity dialog]
+
+[cols="1,4",options="header"]
+.Fields
+|===
+| Field | Description
+
+| Table Name (Physical) | Table name (physical name)
+| Entity Name (Logical) | Entity name (logical name). Used as the table comment.
+| Color | Background color of the entity header. Click a swatch, or choose any color in the color box on the left.
+| Column Name | Column name (physical name)
+| Attribute Name | Attribute name (logical name). Used as the column comment.
+| Data Type | Data type. As you type, a list of the data types of the DBMS appears.
+| Default | Default value
+| PK | Primary key
+| UQ | Unique
+| NN | NOT NULL
+| AI | Auto increment (identity)
+| Domain | Domain. Click the cell to choose one (see <<domains>>).
+|===
+
+The buttons at the bottom are:
+
+* btn:[↑] / btn:[↓] : move the selected column up / down
+* btn:[+] / btn:[-] : add / remove a column
+* *+ Template columns* : add common column templates (see <<templates>>)
+* btn:[Standardize] : rename columns with the standard dictionary (shown only when there are standard words or terms; see <<standards>>)
+* btn:[Index / Check] : switch to editing indexes and CHECK constraints
+
+NOTE: Foreign key columns received from another entity (shown dimmed) cannot be edited in this dialog. They change when you edit the primary key of the parent entity.
+
+==== Entering data types
+
+Click a Data Type cell and type to list the matching data types of the current DBMS.
+Choose one with kbd:[↑] / kbd:[↓] and press kbd:[Enter].
+For types that need a size (such as `VARCHAR (n)`), the cursor is placed inside the parentheses so you can type the size.
+
+.Data type completion
+image::entity-datatype.png[Data type list]
+
+==== Indexes and CHECK constraints
+
+Click btn:[Index / Check] to switch to the index editor. Click it again to return to the column list.
+
+.Indexes and CHECK constraints
+image::entity-index.png[Index / Check]
+
+Creating an index::
+. Click the columns for the index in the column list on the left. The selected columns appear in the middle; drag them to change the order.
+. Enter the *Index Name* (at least 5 characters). For a unique index, select *Unique*.
+. Click btn:[add]. If an index with the same name exists, it is updated.
+. Click an index in the list to edit it again, or click the `x` in front of it to delete it.
+
+Creating a CHECK constraint::
+. Enter the *Name* and the *Expression* (for example `PRICE >= 0`).
+. Click btn:[add]. Click an item in the list to edit it, or click `x` to delete it.
+
+==== Entity colors
+
+You can color the header of important entities or of each business area.
+
+.Entities with colors
+image::entity-color.png[Entity colors]
+
+=== Copy, paste, delete, undo
+
+* kbd:[Ctrl+C] / kbd:[Ctrl+V] : copy and paste the selected entities, text boxes and subject areas. Foreign key links are removed from pasted entities.
+* kbd:[Del] : delete the selected shapes.
+* kbd:[Ctrl+Z] / kbd:[Ctrl+Y] : undo / redo
+
+== Relationships
+
+=== Creating a relationship
+
+Select a relationship tool (identifying or non-identifying), click the parent entity and then the child entity.
+The primary key of the parent entity is added to the child entity as a foreign key (FK).
+
+* *Identifying relationship (solid line)* : the foreign key becomes part of the child's primary key (shown as `PF`).
+* *Non-identifying relationship (dashed line)* : the foreign key becomes a regular column of the child (shown as `FK`).
+
+.A non-identifying relationship from CUSTOMER to COUPON (CUST_NO added to COUPON)
+image::relation-new.png[Creating a non-identifying relationship]
+
+=== Editing a relationship
+
+Click a relationship line to select it, or double-click it to open the *Relationship* dialog.
+
+.A selected relationship line
+image::relation-selected.png[Selected relationship]
+
+.Relationship dialog
+image::relation-dialog.png[Relationship dialog]
+
+[cols="1,4",options="header"]
+|===
+| Field | Description
+
+| Cardinality
+| One To One (1:1) or One To Many (1:N)
+
+| Optionality
+| Whether the parent and the child are mandatory or optional. The symbols at the ends of the line change.
+
+| FK Constraint Name
+| Name of the foreign key constraint. If left empty, the internal ID is used.
+
+| ON DELETE / ON UPDATE
+| Referential actions (NO ACTION, CASCADE, SET NULL, ...). Options the selected DBMS does not support are left as comments in the generated DDL.
+
+| Relationship Name
+| A name shown on the line (for example places, has)
+
+| Automatic route
+| Draws the line automatically around other tables. After moving the line by hand, turn this on again to return to the automatic route.
+|===
+
+TIP: Drag the middle of a relationship line to move its bend, or drag an end to slide it along the edge of the entity.
+
+=== Self-referencing relationship
+
+Click the same entity twice with a relationship tool to create a self-referencing relationship (for example a parent category, or an employee's manager).
+The key is added as a column that starts with `PARENT_` and allows NULL.
+
+.Self-referencing relationship (CATEGORY.PARENT_CATEGORY_ID)
+image::relation-self.png[Self-referencing relationship]
+
+=== Many-to-many relationship
+
+Select the *M:N* tool and click two entities in turn. An associative (intersection) table made of both primary keys is created and connected with two identifying relationships.
+
+.CUSTOMER_PRODUCT created by a many-to-many relationship between CUSTOMER and PRODUCT
+image::relation-mn.png[Many-to-many relationship]
+
+NOTE: Both entities need a primary key to make a many-to-many relationship.
+
+== Text boxes and subject areas
+
+=== Text box
+
+Click the canvas with the *Text box* tool to create a text box.
+Double-click a text box to open a dialog for its content. Use it for table descriptions, business rules, reference codes and other notes.
+
+.Text dialog
+image::text-dialog.png[Text dialog]
+
+.A text box on the canvas (order process notes)
+image::text-box.png[Text box]
+
+=== Subject area
+
+Click the canvas with the *Subject area* tool to create an area. Use it to group related entities visually.
+
+* Drag the name or border of the area to move it together with the entities inside it.
+* Drag the small square at the bottom right corner to resize it.
+* Double-click the name or border to change the name and color.
+
+.Subject Area dialog
+image::area-dialog.png[Subject Area dialog]
+
+.A subject area (named "주문 영역", order area)
+image::area.png[Subject area]
+
+== View
+
+[[view-mode]]
+=== Logical and physical names (Logical / Physical)
+
+The btn:[Logical] and btn:[Physical] buttons can be turned on and off independently.
+
+* *Physical* only: physical names of tables and columns (default)
+* *Logical* only: logical names of entities and attributes (business names)
+* Both: physical and logical names together
+
+.Both Logical and Physical turned on
+image::view-both.png[Logical and physical names]
+
+.Logical only (together with the Keys view)
+image::view-logical.png[Logical names]
+
+[[view-data]]
+=== Attributes shown (All Attributes / Entity / Keys)
+
+.Attributes menu
+image::menu-viewdata.png[Attributes menu,200]
+
+* *All Attributes* : all columns
+* *Entity* : entity names only (to see the overall structure)
+* *Keys* : primary and foreign keys only
+
+.Entity view
+image::view-entity.png[Entity view]
+
+.Keys view
+image::view-keys.png[Keys view]
+
+[[dbms]]
+=== Choosing the DBMS
+
+Choose the target DBMS of the document in the DBMS menu of the toolbar. Supported: MariaDB (MySQL), ORACLE, MS-SQL and PostgreSQL.
+When you change the DBMS, the data types are converted for the target DBMS, and DDL generation and comparison scripts use the syntax of the selected DBMS.
+
+.DBMS menu
+image::menu-dbms.png[DBMS menu,200]
+
+.Changed to ORACLE (INT → NUMBER(10), VARCHAR → VARCHAR2, DATETIME → DATE)
+image::dbms-oracle.png[Converted to ORACLE]
+
+NOTE: If you change to another DBMS and then back to the original one, columns and domains you did not edit in the meantime get their original types back (for example `TINYINT` → `NUMBER(3)` → `TINYINT`). Columns whose type you edited under the other DBMS are converted again.
+
+=== Zoom and moving the view
+
+* Zoom in / out: kbd:[Ctrl++] / kbd:[Ctrl+-], kbd:[Ctrl] + mouse wheel, trackpad pinch
+* Reset zoom: kbd:[Ctrl+0]
+* Scroll up and down / left and right: mouse wheel / kbd:[Shift] + mouse wheel
+* Move the view: drag while holding kbd:[Space], or drag with the middle mouse button
+
+.Zoomed out
+image::zoom-out.png[Zoomed out]
+
+=== Theme
+
+Choose *Light*, *Dark* or *System* (follows the operating system) with the theme button at the top right.
+
+.Theme menu
+image::theme-menu.png[Theme menu,220]
+
+.Dark theme
+image::theme-dark.png[Dark theme]
+
+[[find]]
+=== Find
+
+Press kbd:[Ctrl+F] or click the magnifier at the top right to open the find box.
+It searches table names, column names and logical names. Click a result to move the view to that entity.
+
+* kbd:[Enter] or kbd:[↓] : next result
+* kbd:[Shift+Enter] or kbd:[↑] : previous result
+* kbd:[Esc] : close
+
+Entities that are not on the current page are marked `Main` in the results.
+
+.Find (CUST)
+image::find.png[Find]
+
+[[pages]]
+== Pages
+
+A large model can be divided into pages by business area.
+An entity can be on several pages, at a different position on each page. The `Main` page always shows every entity.
+
+=== Creating a page
+
+. Select the entities for the page.
++
+.Selecting the entities for a page
+image::page-select.png[Selecting entities]
+. Click btn:[+] next to the tabs at the bottom and enter a page name.
+. A new page with only the selected entities opens.
++
+.The new page "주문" (orders)
+image::page-tab.png[Orders page]
+
+=== Editing and deleting a page
+
+Double-click a page tab, or click the pencil icon on the tab, to open the *Page* dialog.
+Change the name and select or clear the entities on the page. Use *Filter* to find entities, and btn:[All] / btn:[None] to select or clear all visible items.
+btn:[Delete Page] deletes the page (the entities stay in the model).
+
+.Page dialog
+image::page-dialog.png[Page dialog]
+
+NOTE: When you select entities on a page and press kbd:[Del], you choose between *Remove from Page* (remove from this page only) and *Delete from Model* (delete from the model and every page). A relationship line is shown only when both entities are visible, and text boxes and subject areas are shown only on the page where they were created.
+
+[[files]]
+== Files
+
+The web version and the desktop app store documents in different places.
+
+[cols="1,2,2",options="header"]
+.How documents are stored
+|===
+| | Web version | Desktop app
+| Location | Browser storage (IndexedDB) | A file in a folder you choose
+| File format | - | `.erd9` file in JSON format
+| Save | Enter a document name the first time | Choose a file in the save dialog the first time
+| Open | Choose from the list of documents saved in the browser | Choose an `.erd9` file in the open dialog
+| Save As | Not available | Save to another `.erd9` file
+| Moving to another PC | menu:Files[Export to Json] / menu:Files[Import from Json] | Copy the `.erd9` file
+|===
+
+For saving and opening in the web version see <<web-save>>; for the desktop app see <<desktop-files>>. History, image export, JSON export and import, and autosave and recovery work the same in both.
+
+.Files menu
+image::menu-files.png[Files menu,210]
+
+[cols="1,4",options="header"]
+|===
+| Menu | Description
+
+| New | Creates a new document.
+| Open Samples | Opens the sample list.
+| Open | Opens a document saved in the browser. The desktop app opens an `.erd9` file.
+| Save | Saves the document in the browser (kbd:[Ctrl+S]). The desktop app saves to an `.erd9` file.
+| Save As | Desktop app only. Saves to another `.erd9` file (kbd:[Ctrl+Shift+S]).
+| History | Shows the versions kept each time you saved, to compare or restore them.
+| Export Image & Print | Downloads the diagram as a PNG or SVG image, or prints it.
+| Export to Json | Downloads the document to your PC as a JSON file.
+| Import from Json | Opens a JSON file from your PC.
+|===
+
+[[web-save]]
+=== Saving (web version)
+
+NOTE: The desktop app saves to `.erd9` files instead, as described in <<desktop-files>>.
+
+Click menu:Files[Save] or press kbd:[Ctrl+S]. The first time, enter a file name.
+The name of the saved document is shown at the top left of the screen.
+
+.Name of the saved document
+image::filename.png[Document name]
+
+=== Opening (web version)
+
+menu:Files[Open] lists the documents saved in the browser, most recently modified first.
+Select a document and click btn:[Open], or double-click it. The `X` at the end of a row deletes the document and its history.
+
+.File Open
+image::file-open.png[File Open]
+
+[[desktop-files]]
+=== Saving and opening (desktop app)
+
+The desktop app saves and opens documents as `.erd9` files on your PC instead of the browser storage.
+An `.erd9` file has the same JSON format as the file downloaded with menu:Files[Export to Json], so the web version can open it with menu:Files[Import from Json].
+The Files menu of the desktop app has an additional *Save As* item.
+
+.Files menu of the desktop app
+image::menu-files-desktop.png[Files menu of the desktop app,210]
+
+Saving::
+* menu:Files[Save] or kbd:[Ctrl+S] : the first time, choose a folder and file name in the save dialog. If you do not type an extension, `.erd9` is added. After that, the document is saved to the same file without asking.
+* menu:Files[Save As] or kbd:[Ctrl+Shift+S] : saves to another file, and you continue working with that file.
++
+.Save dialog
+image::file-save-desktop.png[Save dialog]
++
+The name of the saved file (without the extension) is shown at the top left of the screen. Hover over it to see the full path.
++
+.Name of the saved file
+image::filename-desktop.png[File name]
+
+Opening::
+Click menu:Files[Open] and choose an `.erd9` file in the open dialog. If the current document has unsaved changes, you are asked first.
++
+.Open dialog
+image::file-open-desktop.png[Open dialog]
+
+NOTE: A version is kept on this PC each time you save (up to 20 per file), so menu:Files[History] can compare or restore earlier versions in the desktop app as well. Versions are kept per file path and are not stored inside the `.erd9` file. Autosave and recovery of unsaved work also work as in the web version.
+
+=== History
+
+A version is kept each time you save a document (up to 20 per document).
+In menu:Files[History] you can compare a version with the current document (btn:[Compare]) or restore it (btn:[Restore]).
+
+.File History
+image::file-history.png[File History]
+
+btn:[Compare] shows the differences between that version and the current document, and the ALTER script that changes a database built from that version into the current document.
+
+.Compared with an earlier version: a column added to CUSTOMER, a column renamed in PAYMENT
+image::file-history-compare.png[Comparing a version]
+
+NOTE: Save the document first to use the history. A restored document continues as the same file and stays modified until you save it again.
+
+=== Image export and print
+
+Open menu:Files[Export Image & Print].
+
+.Export Image & Prints
+image::file-print.png[Image export and print]
+
+Image export::
+* *All*, or *Selected entities* (available when entities are selected)
+* *Scale* : PNG scale, 1x to 4x
+* *Transparent background*
+* btn:[Download PNG] / btn:[Download SVG]
++
+The image is cropped to the area the entities occupy.
+
+Print::
+. Enter the paper size in pixels in *Width* and *Height*. The default is A4 (21 cm × 29.7 cm = 794 × 1124 pixels).
+. Click btn:[Apply] to divide the diagram into pages of that size in the preview.
+. Hover over a preview image and use its buttons to print or download that page.
+
+=== JSON export and import
+
+* menu:Files[Export to Json] : downloads the current document as `document-name.json`. Use it to move the document to another PC or browser, or as a backup.
+* menu:Files[Import from Json] : select a file (`.json` or `.erd9`) and click btn:[Open] to open the document.
+
+.Import from Json
+image::file-import.png[Import from Json]
+
+=== Autosave and recovery
+
+Unsaved work is stored in the program's internal storage every 30 seconds and when you leave the page (the desktop app does the same).
+When you open ERD9 again, it asks whether to recover it. btn:[Recover] restores the work including the undo history, and btn:[Discard] deletes the autosaved work.
+
+.Recovering unsaved work
+image::file-recovery.png[Recover unsaved work]
+
+[[addons]]
+== Add-ons
+
+.Add-ons menu
+image::menu-addons.png[Add-ons menu,240]
+
+[[import-ddl]]
+=== Import from DDL
+
+Builds an ERD by analyzing DDL (CREATE TABLE and so on). It imports tables, column comments, primary keys, relationships (foreign keys), indexes, CHECK constraints, views and sequences.
+MariaDB, PostgreSQL and MS-SQL statements are analyzed with an SQL parser; Oracle and statements the parser cannot read are analyzed with pattern matching.
+
+. Copy the DDL to the clipboard.
+. Open menu:Add-ons[Import from DDL] and click btn:[Paste]. Select the DBMS of the DDL.
++
+.SQL tab: the pasted DDL
+image::addon-importddl-sql.png[Import from DDL - SQL]
+. Click btn:[Preview] to see the result of the analysis in the *Preview* tab.
++
+.Preview tab: the result for each table
+image::addon-importddl-preview.png[Import from DDL - Preview]
+. Click btn:[Run (Import from DDL)], or btn:[Run (Import from Preview result)] in the Preview tab, to create the entities and relationships. What was done is shown in the *Log* tab.
++
+.Log tab
+image::addon-importddl-log.png[Import from DDL - Log]
+
+TIP: Imported entities are placed one after another without overlapping. Arrange them with <<auto-layout>>.
+
+=== Generate DDL
+
+Generates DDL from the ERD. Choose *All entities* (everything, including views and sequences) or *Selected entities* (the selected entities and the relationships between them), and click btn:[Generate DDL].
+btn:[Copy code] copies the DDL to the clipboard.
+
+.Generate DDL
+image::addon-ddl.png[Generate DDL]
+
+=== Compare ERD / ALTER Script
+
+Compares a base document with the current document and generates the differences and an ALTER script.
+Choose the base document from *Saved file* (a document saved in the browser) or *JSON file*, and click btn:[Compare].
+Copy the result with btn:[Copy script] or download it with btn:[Download .sql].
+
+.Compare ERD / ALTER Script
+image::addon-compare-empty.png[Compare ERD]
+
+To compare with a saved version, use btn:[Compare] in menu:Files[History] (see History in <<files>>).
+
+In the desktop app, *ERD9 file* is shown instead of *Saved file*. It defaults to the `.erd9` file of the current document, so you can compare changes made since you last saved right away. Choose another file with btn:[Choose...].
+
+.Desktop app: compared with the saved file (REVIEW deleted after saving)
+image::addon-compare-desktop.png[Compare ERD - desktop app]
+
+NOTE: Tables and columns with the same internal ID are treated as the same object; those with different IDs are matched by name. So when you compare with an earlier version of the same document, renames are detected as `RENAME`. Always review the script before running it.
+
+=== Table Description
+
+Generates table descriptions. Choose the scope and click btn:[Generate Table Description].
+Copy them with btn:[Copy Data], or download them as btn:[Markdown], btn:[HTML] or btn:[Excel] files.
+The description contains the columns, indexes and foreign keys of each table.
+
+.Table Description (the foreign key list)
+image::addon-tabledesc.png[Table Description]
+
+=== Detect Missing Relationship
+
+Checks the relationships.
+
+* *Missing* : finds columns with the same name in different tables that have no relationship. Select *Match data type* to find only those with the same data type as well. Select rows and click btn:[Make Relationship for selected rows] to create the relationships.
+* *Not Match* : finds related tables whose column names or data types differ.
+
+.Missing: REVIEW.CUST_NO has no relationship with CUSTOMER
+image::addon-detect-missing.png[Detect Missing Relationship - Missing]
+
+.Not Match: an empty list when there are no problems
+image::addon-detect-notmatch.png[Detect Missing Relationship - Not Match]
+
+=== Generate Logical Names
+
+Splits each physical name into words by `_`, looks the words up in dictionaries, and makes logical names from them. Use it after importing DDL or a database that has no logical names. The included dictionaries translate English into Korean.
+
+. Select the dictionaries: *English → Korean*, *English abbreviation → Korean*
+. Choose the options.
+** *Overwrite existing logical names* : replace logical names that already exist
+** *Include table names* : generate table names as well
+. Choose the scope and click btn:[Generate Logical Names] to preview the result.
+. Select the items to apply and click btn:[Apply].
+
+.Generate Logical Names (Employee sample)
+image::addon-logicalnames.png[Generate Logical Names]
+
+=== Make ERD with AI
+
+Describe a business domain to the AI and it creates an entity structure. See <<ai>> for details.
+
+[[auto-layout]]
+=== Auto Layout
+
+Arranges the entities and text boxes of the current page automatically according to their relationships. Undo it with kbd:[Ctrl+Z].
+
+.Before auto layout (right after importing DDL)
+image::autolayout-before.png[Before auto layout]
+
+.After auto layout
+image::autolayout-after.png[After auto layout]
+
+=== Views & Sequences
+
+Views and sequences are not drawn in the diagram, but they are saved with the document and included in DDL generation (All entities), ALTER scripts and Forward Engineering.
+
+* Select an item in the list on the left, edit it and click btn:[Apply].
+* Enter a new item with btn:[New], and delete one with btn:[Delete].
+* Finally click btn:[Save] to apply the changes to the document.
+
+.Views tab
+image::addon-views.png[Views]
+
+.Sequences tab (start with, increment by, min value, max value, cycle)
+image::addon-sequences.png[Sequences]
+
+[[standards]]
+=== Domains & Standards
+
+Manages domains and the standard dictionaries (words and terms), and checks whether the columns follow the standard. All of them are saved with the document.
+In each tab, add items with btn:[Add], and use btn:[Import CSV] / btn:[Export CSV] to edit them in Excel or share them with other documents. Finally click btn:[Save].
+
+[[domains]]
+==== Domains
+
+A domain is a data type, default value and NOT NULL setting shared by many columns. Changing a domain updates every column that uses it. *Used* is the number of columns that use the domain.
+
+.Domains tab
+image::std-domains.png[Domains]
+
+Click the *Domain* cell in the Entity dialog and choose a domain to fill the data type, default value and NOT NULL from the domain.
+Changing the data type, default value or NOT NULL by hand detaches the column from the domain.
+
+.The domain "상태" (status) assigned to a column (VARCHAR(10), NOT NULL)
+image::entity-domain.png[Assigning a domain]
+
+==== Words
+
+The standard word dictionary (for example 고객 (customer) → CUST, 번호 (number) → NO). A logical name that is not a term is made into a column name by combining words (고객주문번호, customer order number → CUST_ORD_NO).
+
+.Words tab
+image::std-words.png[Words]
+
+==== Terms
+
+The standard term dictionary (for example 고객번호 (customer number) → CUST_NO, optionally with a domain).
+
+* btn:[Fill Physical] : fills the physical names of terms that have none, from the words.
+* btn:[Extract from ERD] : adds the columns of the current ERD (logical name → column name) as terms. Use it to start a dictionary from an existing ERD.
+
+.Terms tab (extracted with Extract from ERD)
+image::std-terms.png[Terms]
+
+==== Check
+
+Click btn:[Check] to check every column against the domains and dictionaries. Columns that do not follow the standard are listed with suggestions.
+Select the items to fix and click btn:[Apply Selected] to save the dictionaries and apply the suggested column names and domains.
+
+.Check tab: five column names that differ from the word dictionary
+image::std-check.png[Check]
+
+==== Using the standard in the Entity dialog
+
+When there is a standard dictionary, the Entity dialog offers the following.
+
+* As you type a column name or attribute name, matching terms are suggested.
++
+.Term suggestions (after typing "결제", payment)
+image::entity-term-suggest.png[Term suggestions]
+* An attribute name that is not a term is made into a column name from the words. Typing "결제상태" (payment status) fills in `PAY_STATUS`.
++
+.A column name made from words
+image::entity-term-convert.png[Combining words]
+* btn:[Standardize] renames every column (and sets its domain) to follow the standard, based on the attribute names. Words that are not in the dictionary are reported.
+
+[[templates]]
+=== Column Templates
+
+Templates group columns that repeat in many tables, such as created at and created by. *Audit columns* and *Soft delete* are included by default.
+Create a template with btn:[New], enter its name and columns, and click btn:[Save]. Templates are stored in this browser, so you can use them in every document.
+
+.Column Templates
+image::addon-templates.png[Column Templates]
+
+Choose a template in *+ Template columns* in the Entity dialog to add its columns at once. Columns that already exist are not added, and the data types are converted for the DBMS of the document.
+
+.DELIVERY with the Audit columns template added
+image::entity-template.png[Adding template columns]
+
+[[ai]]
+== AI features
+
+An API key for one of OpenAI (ChatGPT), Anthropic (Claude) or Google (Gemini) is required.
+The key is kept only in the current window (it disappears when the window is closed) and is sent directly from the browser to the selected AI service.
+
+=== AI settings
+
+The settings window opens the first time you open menu:Add-ons[Make ERD with AI], or when you click *AI settings* in the chat window.
+
+* *AI Service* : the AI service
+* *API Key* : your API key
+* *Model* : choose a suggested model or type any model name
+* *Comment Language* : the language of the generated logical names (comments), for example korean
+
+Click btn:[Start] to check the key and save the settings.
+
+.AI Settings
+image::ai-settings.png[AI Settings]
+
+CAUTION: Do not enter an API key on a shared PC. The AI does not remember previous messages, so write the full request every time.
+
+=== Make ERD with AI
+
+Enter the business domain and click btn:[Send]. The AI suggests an entity structure in a fixed JSON format.
+Check the result and click btn:[Make ERD] to create the entities and relationships.
+
+.Make ERD with AI (the request: an online shopping mall with members, products, orders and payments)
+image::ai-make-erd.png[Make ERD with AI]
+
+=== AI chat
+
+Click the chat button at the bottom right to open the chat window.
+
+* *Create Entity* : ask for an entity structure (for example a shopping mall).
+* *ERD review and feedback* : get an evaluation of the current ERD.
+* *Free Talk* : ask for anything based on the ERD (for example MyBatis code).
+
+ERD review and Free Talk work on *All entities* or *Selected entities*.
+
+.AI chat window (asking for a MyBatis mapper XML for the selected entities)
+image::ai-chat.png[AI chat]
+
+[[database]]
+== Database connection (desktop app)
+
+The desktop app saves and opens documents as `.erd9` files (see <<desktop-files>>) and has a *Database* menu. It connects to a database server to create tables from the ERD, build an ERD from an existing database, or compare the two and bring them in line.
+
+.Desktop app (Windows)
+image::tauri-window.png[ERD9 desktop app]
+
+.Database menu
+image::menu-database.png[Database menu,260]
+
+[cols="1,4",options="header"]
+.Supported DBMS
+|===
+| DBMS | Notes
+| MariaDB / MySQL | Default port 3306
+| PostgreSQL | Default port 5432, default schema public
+| MS-SQL | Default port 1433, default schema dbo. For a self-signed certificate, select *Trust the server certificate*
+| Oracle | Default port 1521; enter the *Service name* instead of *Database*. https://www.oracle.com/database/technologies/instant-client.html[Oracle Instant Client] is required on the PC.
+|===
+
+=== Connection settings
+
+All three features take the connection settings at the top of the dialog.
+
+[cols="1,4",options="header"]
+|===
+| Field | Description
+| DBMS | The DBMS to connect to. Changing it sets the port to the default of that DBMS.
+| Host / Port | Server address and port
+| Database | Database name (Service name for Oracle)
+| Schema | If left empty, the default is used (MariaDB: database, PostgreSQL: public, MS-SQL: dbo, Oracle: user)
+| User / Password | Login account
+|===
+
+Check the connection with btn:[Test connection].
+Connection settings are remembered without the password; the password is remembered only until the app is closed.
+
+NOTE: If the DBMS of the connection differs from the DBMS of the document, you are warned that data type names may not be valid.
+
+=== Forward Engineering
+
+Creates the tables, relationships, indexes, views and sequences of the ERD on a database server.
+
+. Open menu:Database[Forward Engineering] and enter the connection settings.
+. Choose the options. Changing an option generates the script again.
+** *All tables* / *Selected tables* : all or the selected entities
+** *Drop existing objects first* : add statements that drop the existing objects first
+** *Stop on error* : stop when an error occurs
+. Review the script below. You can edit it if needed.
++
+.Forward Engineering: the generated script
+image::db-forward.png[Forward Engineering]
+. Click btn:[Execute] and confirm. The statements are executed one by one and the results are shown in the log.
++
+.Result (the DROP statements were skipped because no objects existed; the other 19 statements were executed)
+image::db-forward-done.png[Forward Engineering result]
+
+The log::
+* `OK` : executed successfully
+* `SKIP` : errors of DROP statements (such as dropping an object that does not exist) are ignored and execution continues
+* `ERROR` : failed. Execution stops if *Stop on error* is on
+
+=== Reverse Engineering
+
+Reads the tables, columns, comments, primary keys, relationships, indexes, CHECK constraints, views and sequences of an existing database and builds an ERD.
+
+. Open menu:Database[Reverse Engineering] and enter the connection settings.
+. Choose the options.
+** *Include views and sequences* : import views and sequences as well
+** *Add to the current document* / *New document* : add to the current document or create a new one
+. Click btn:[Read schema] to list the tables. Tables that are already in the ERD are marked `already in the ERD` and cleared.
++
+.Reverse Engineering: the tables read from the database
+image::db-reverse.png[Reverse Engineering]
+. Select the tables and click btn:[Import]. The relationships between the selected tables are imported as well.
++
+.The imported result
+image::db-reverse-result.png[Reverse Engineering result]
+
+TIP: After importing, arrange the entities with menu:Add-ons[Auto Layout], and use menu:Add-ons[Generate Logical Names] if there are no logical names.
+
+.Arranged with Auto Layout
+image::db-reverse-layout.png[Auto layout]
+
+=== Compare and Merge
+
+Compares the ERD with the database, lists every difference (tables, views, sequences), and applies each one in the direction you choose.
+In the example below, a `BIRTH_DT` column was added to `CUSTOMER` in the shopping mall ERD used for Forward Engineering, while a `product.ORIGIN_NM` column and a `faq` table were added to the database in the meantime.
+
+Tables, columns, views and sequences are matched by name, ignoring case. Even when the database returns table names in lower case, as MariaDB on Windows does, they are matched with the upper-case names of the ERD, and the scripts use the actual names in the database. Notations the database rewrites (integer display widths such as `INT(11)`, the default `current_timestamp()`, quotes and parentheses in view queries) are not reported as differences.
+
+. Open menu:Database[Compare and Merge], enter the connection settings and click btn:[Compare].
++
+.Compare and Merge: the differences
+image::db-sync.png[Compare and Merge]
+. Choose the direction of each item in *Apply*. btn:[All ERD → DB], btn:[All DB → ERD] and btn:[Skip all] change all of them at once.
++
+[cols="1,2,2",options="header"]
+|===
+| Status | ERD → DB | DB → ERD
+| ERD only | Create in DB | Delete from ERD
+| DB only | Drop from DB | Add to ERD
+| Different | ERD → DB (runs an ALTER script) | DB → ERD (updates the ERD)
+|===
++
+Items set to *Skip* are not applied.
+*Script to run on the database* shows the ALTER script for the ERD → DB items.
++
+.Directions: customer ERD → DB, faq and product DB → ERD (names are shown as the lower-case names of the database)
+image::db-sync-direction.png[Choosing directions]
+. Click btn:[Apply] and confirm. The script is run on the database and the ERD is updated, and then the two are compared again to show any remaining differences.
++
+.After applying: no differences
+image::db-sync-done.png[Result]
++
+.The faq table and PRODUCT.ORIGIN_NM added to the ERD (keeping the ERD's names), and customer.BIRTH_DT added to the database
+image::db-sync-result.png[ERD after applying]
+
+IMPORTANT: Because items are matched by name, a renamed column appears as dropped and added. If the database script fails, the ERD is not changed; updating the ERD clears the undo history. Always review the script and back up the database before applying changes to a production database.
+
+[appendix]
+== Shortcut keys
+
+[cols="2,3",options="header"]
+|===
+| Key | Action
+
+| kbd:[Ctrl++] / kbd:[Ctrl+-] / kbd:[Ctrl] + mouse wheel / trackpad pinch | Zoom in / out
+| kbd:[Ctrl+0] | Reset zoom
+| Mouse wheel / kbd:[Shift] + mouse wheel | Scroll up and down / left and right
+| kbd:[Space] + drag / middle button drag | Move the view
+| kbd:[Del] | Delete the selected entity or relationship
+| kbd:[Ctrl+A] | Select all
+| kbd:[Ctrl+C] / kbd:[Ctrl+V] | Copy / paste entities
+| kbd:[Ctrl+Z] / kbd:[Ctrl+Y] | Undo / redo
+| kbd:[Ctrl+S] | Save the document (web: browser storage, desktop app: `.erd9` file)
+| kbd:[Ctrl+Shift+S] | Save As (desktop app)
+| kbd:[Ctrl+F] | Find entity
+| kbd:[Esc] | Close dialog
+|===
+
+[appendix]
+== Frequently asked questions
+
+Where are documents stored?::
+The web version stores them in the browser's internal storage (IndexedDB). To move them to another PC or back them up, use menu:Files[Export to Json]. The desktop app saves them to `.erd9` files in the location you choose.
+
+Is there no Database menu in the web version?::
+A web browser cannot connect to a database server directly, so the Database menu exists only in the desktop app. In the web version, you can exchange DDL with <<import-ddl>>, Generate DDL and Compare ERD / ALTER Script.
+
+Can I bring back an entity I deleted by mistake?::
+Press kbd:[Ctrl+Z] to undo. If the document was saved, you can also restore an earlier version in menu:Files[History].
